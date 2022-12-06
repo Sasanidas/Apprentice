@@ -1,8 +1,4 @@
-;;; alchemist-file-test.el ---
-
-;; Copyright © 2014-2017 Samuel Tonini
-;;
-;; Author: Samuel Tonini <tonini.samuel@gmail.com>
+;;; apprentice-mix-test.el --- -*- lexical-binding: t; -*-
 
 ;; This file is not part of GNU Emacs.
 
@@ -23,18 +19,15 @@
 
 ;;; Code:
 
-(ert-deftest alchemist-file/list-files-from-directory ()
-  (with-sandbox
-   (f-touch "mix.exs")
-   (f-mkdir "lib")
-   (f-mkdir "lib" "path")
-   (f-touch "lib/file.ex")
-   (f-touch "lib/another.ex")
-   (f-touch "lib/path/foo.ex")
-   (should (equal (alchemist-file-read-dir (alchemist-project-root) "lib")
-                  '("lib/another.ex" "lib/file.ex" "lib/path/foo.ex")))
-   ))
+(ert-deftest match-prompt ()
+  (let ((prompt apprentice-iex-prompt-regexp))
+    (should (equal 0 (string-match prompt "iex(1)>")))
+    (should (equal 0 (string-match prompt "iex(123)>")))
+    (should (equal 0 (string-match prompt "...(1)>")))
+    (should (equal nil (string-match prompt "abc(1)>")))
+    (should (equal nil (string-match prompt " iex(1)>")))
+    (should (equal nil (string-match prompt "iex>")))))
 
-(provide 'alchemist-file-test)
+(provide 'apprentice-iex-test)
 
-;;; alchemist-file-test.el ends here
+;;; apprentice-iex-test.el ends here

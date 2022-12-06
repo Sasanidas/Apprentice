@@ -27,21 +27,21 @@
 (require 'f)
 (require 'dash)
 
-(defvar alchemist-test-path
+(defvar apprentice-test-path
   (f-parent (f-this-file)))
 
-(defvar alchemist-root-path
-  (f-parent alchemist-test-path))
+(defvar apprentice-root-path
+  (f-parent apprentice-test-path))
 
-(defvar alchemist-sandbox-path
-  (file-name-as-directory (f-expand "sandbox" alchemist-test-path)))
+(defvar apprentice-sandbox-path
+  (file-name-as-directory (f-expand "sandbox" apprentice-test-path)))
 
 (defmacro with-sandbox (&rest body)
   "Evaluate BODY in an empty temporary directory."
-  `(let ((default-directory alchemist-sandbox-path))
-     (when (f-dir? alchemist-sandbox-path)
-       (f-delete alchemist-sandbox-path :force))
-     (f-mkdir alchemist-sandbox-path)
+  `(let ((default-directory apprentice-sandbox-path))
+     (when (f-dir? apprentice-sandbox-path)
+       (f-delete apprentice-sandbox-path :force))
+     (f-mkdir apprentice-sandbox-path)
      ,@body))
 
 (defmacro with-current-variable (name value &rest body)
@@ -76,9 +76,9 @@
   (goto-char (point-min))
   (forward-line (1- line)))
 
-(add-to-list 'load-path alchemist-root-path)
+(add-to-list 'load-path apprentice-root-path)
 
-(require 'alchemist)
+(require 'apprentice)
 (require 'ert)
 
 ;;; test-helper.el ends here

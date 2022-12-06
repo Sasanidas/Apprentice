@@ -1,4 +1,4 @@
-;;; alchemist-test-mode-test.el --- Test suite for Alchemist testing mode
+;;; apprentice-test-mode-test.el --- Test suite for Apprentice testing mode
 
 ;; Copyright © 2015 Samuel Tonini
 ;;
@@ -21,38 +21,38 @@
 
 ;;; Commentary:
 
-;; Test suite for Alchemist testing mode
+;; Test suite for Apprentice testing mode
 
 ;;; Code:
 
-(defun alchemist-test-current-position ()
+(defun apprentice-test-current-position ()
   (interactive)
   (message "current position > %s"))
 
-(defmacro alchemist-test-with-temp-buffer (content &rest body)
+(defmacro apprentice-test-with-temp-buffer (content &rest body)
   "Evaluate BODY in a temporary buffer with CONTENTS."
   (declare (debug t)
            (indent 1))
   `(with-temp-buffer
      (insert ,content)
-     (alchemist-mode)
-     (alchemist-test-mode)
+     (apprentice-mode)
+     (apprentice-test-mode)
      (font-lock-fontify-buffer)
      (goto-char (point-min))
      ,@body))
 
-(defun alchemist-test-face-at (pos &optional content)
+(defun apprentice-test-face-at (pos &optional content)
   "Get the face at POS in CONTENT.
 
 If CONTENT is not given, return the face at POS in the current
 buffer."
   (if content
-      (alchemist-test-with-temp-buffer content
+      (apprentice-test-with-temp-buffer content
         (get-text-property pos 'face))
     (get-text-property pos 'face)))
 
 (ert-deftest fontify-specific-functions-inside-testing-mode ()
-  (alchemist-test-with-temp-buffer
+  (apprentice-test-with-temp-buffer
    "
 defmodule MyTest do
   use ExUnit.Case
@@ -74,23 +74,23 @@ defmodule MyTest do
   end
 end
 "
-   (should (eq (alchemist-test-face-at 43) 'font-lock-variable-name-face))
-   (should (eq (alchemist-test-face-at 63) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 114) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 162) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 179) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 213) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 237) 'font-lock-type-face))
-   (should (eq (alchemist-test-face-at 267) 'font-lock-variable-name-face))
+   (should (eq (apprentice-test-face-at 43) 'font-lock-variable-name-face))
+   (should (eq (apprentice-test-face-at 63) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 114) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 162) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 179) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 213) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 237) 'font-lock-type-face))
+   (should (eq (apprentice-test-face-at 267) 'font-lock-variable-name-face))
 
-   (should (eq (alchemist-test-face-at 283) 'font-lock-type-face)) ;; flunk "msg"
-   (should (eq (alchemist-test-face-at 302) 'font-lock-type-face)) ;; flunk("msg")
+   (should (eq (apprentice-test-face-at 283) 'font-lock-type-face)) ;; flunk "msg"
+   (should (eq (apprentice-test-face-at 302) 'font-lock-type-face)) ;; flunk("msg")
    ))
 
 (ert-deftest get-list-of-all-tests-in-buffer ()
   (should (equal '("\"create a pkg file/dir skeleton\"" ":symbol")
                  (with-temp-buffer
-                   (alchemist-test-mode)
+                   (apprentice-test-mode)
                    (insert "
 defmodule MyTest do
   test \"create a pkg file/dir skeleton\" do
@@ -100,8 +100,8 @@ defmodule MyTest do
   end
 end
 ")
-                   (-map 'car (alchemist-test-mode--tests-in-buffer))))))
+                   (-map 'car (apprentice-test-mode--tests-in-buffer))))))
 
-(provide 'alchemist-test-mode-test)
+(provide 'apprentice-test-mode-test)
 
-;;; alchemist-test-mode-test.el ends here
+;;; apprentice-test-mode-test.el ends here

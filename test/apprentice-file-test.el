@@ -1,4 +1,4 @@
-;;; alchemist-help-tests.el --- Test suite for alchemist-help.el
+;;; apprentice-file-test.el ---
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;;
@@ -23,18 +23,17 @@
 
 ;;; Code:
 
-(ert-deftest test-no-doc-available-p ()
-  (should (alchemist-help-no-doc-available-p
-           "Could not load module CustomModule, got: nofile"))
-  (should (alchemist-help-no-doc-available-p
-           "No documentation for List.Chars.Atom was found"))
-  (should (alchemist-help-no-doc-available-p
-           ":lists is an Erlang module and, as such, it does not have Elixir-style docs"))
-  (should (alchemist-help-no-doc-available-p
-           ""))
-  (should-not (alchemist-help-no-doc-available-p
-               "List ...")))
+(ert-deftest apprentice-file/list-files-from-directory ()
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "lib")
+   (f-mkdir "lib" "path")
+   (f-touch "lib/file.ex")
+   (f-touch "lib/another.ex")
+   (f-touch "lib/path/foo.ex")
+   (should (equal (apprentice-file-read-dir (apprentice-project-root) "lib")
+                  '("lib/another.ex" "lib/file.ex" "lib/path/foo.ex")))))
 
-(provide 'alchemist-help-tests)
+(provide 'apprentice-file-test)
 
-;;; alchemist-help-tests.el ends here
+;;; apprentice-file-test.el ends here

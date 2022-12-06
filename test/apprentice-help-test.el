@@ -1,4 +1,4 @@
-;;; alchemist-phoenix-test.el ---
+;;; apprentice-help-tests.el --- Test suite for apprentice-help.el
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;;
@@ -23,16 +23,18 @@
 
 ;;; Code:
 
-(ert-deftest alchemist-phoenix-test/a-phoenix-project ()
-  (with-sandbox
-   (f-touch "mix.exs")
-   (f-mkdir "web")
-   (should (alchemist-phoenix-project-p))))
+;; (ert-deftest test-no-doc-available-p ()
+;;   (should (apprentice-help-no-doc-available-p
+;;            "Could not load module CustomModule, got: nofile"))
+;;   (should (apprentice-help-no-doc-available-p
+;;            "No documentation for List.Chars.Atom was found"))
+;;   (should (apprentice-help-no-doc-available-p
+;;            ":lists is an Erlang module and, as such, it does not have Elixir-style docs"))
+;;   (should (apprentice-help-no-doc-available-p
+;;            ""))
+;;   (should-not (apprentice-help-no-doc-available-p
+;;                "List ...")))
 
-(ert-deftest alchemist-phoenix-test/no-phoenix-project ()
-  (with-sandbox
-   (f-touch "mix.exs")
-   (f-mkdir "lib")
-   (should-not (alchemist-phoenix-project-p))))
+;; (provide 'apprentice-help-tests)
 
-(provide 'alchemist-phoenix-test)
+;;; apprentice-help-tests.el ends here

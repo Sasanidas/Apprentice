@@ -1,4 +1,4 @@
-;;; alchemist-interact-test.el ---
+;;; apprentice-interact-test.el ---
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;;
@@ -25,23 +25,23 @@
 
 ;;; Code:
 
-(ert-deftest alchemist-interact/insert-string-as-comment ()
+(ert-deftest apprentice-interact/insert-string-as-comment ()
   (should (equal "
 # => sum = fn (a, b) ->
 # =>   a + b
 # => end
 # => sum.(21, 33)"
                  (with-temp-buffer
-                   (alchemist-interact-insert-as-comment "sum = fn (a, b) ->
+                   (apprentice-interact-insert-as-comment "sum = fn (a, b) ->
   a + b
 end
 sum.(21, 33)")
                    (buffer-substring-no-properties (point-min) (point-max)))))
   (should (equal "  # => IO.puts 1 + 1"
                  (with-temp-buffer
-                   (alchemist-interact-insert-as-comment "IO.puts 1 + 1")
+                   (apprentice-interact-insert-as-comment "IO.puts 1 + 1")
                    (buffer-substring-no-properties (point-min) (point-max))))))
 
-(provide 'alchemist-interact-test)
+(provide 'apprentice-interact-test)
 
-;;; alchemist-interact-test.el ends here
+;;; apprentice-interact-test.el ends here

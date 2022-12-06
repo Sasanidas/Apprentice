@@ -1,4 +1,4 @@
-;;; alchemist-mix-test.el --- -*- lexical-binding: t; -*-
+;;; apprentice-mix-test.el --- -*- lexical-binding: t; -*-
 
 ;; Copyright © 2015 Samuel Tonini
 ;;
@@ -24,42 +24,42 @@
 ;;; Code:
 
 (defun prepare-test-report-buffer ()
-  (when (process-live-p (get-buffer-process (get-buffer alchemist-test-report-buffer-name)))
-    (set-process-query-on-exit-flag (get-buffer-process (get-buffer alchemist-test-report-buffer-name)) nil)))
+  (when (process-live-p (get-buffer-process (get-buffer apprentice-test-report-buffer-name)))
+    (set-process-query-on-exit-flag (get-buffer-process (get-buffer apprentice-test-report-buffer-name)) nil)))
 
 (ert-deftest test-mix/run-mix-test ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
   (shut-up
-    (alchemist-mix-test))
-  (should (equal "" alchemist-last-run-test))
+    (apprentice-mix-test))
+  (should (equal "" apprentice-last-run-test))
   (delay 2.0 (lambda ()
-               (should (alchemist-report--last-run-successful-p))))
+               (should (apprentice-report--last-run-successful-p))))
   (wait 2.1))
 
 (ert-deftest test-mix/run-mix-test-file ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
   (shut-up
-    (alchemist-mix-test-file "dummy_elixir_test.exs"))
-  (should (equal (expand-file-name "dummy_elixir_test.exs") alchemist-last-run-test))
+    (apprentice-mix-test-file "dummy_elixir_test.exs"))
+  (should (equal (expand-file-name "dummy_elixir_test.exs") apprentice-last-run-test))
   (delay 2.0 (lambda ()
-               (should (alchemist-report--last-run-successful-p))))
+               (should (apprentice-report--last-run-successful-p))))
   (wait 2.1))
 
 (ert-deftest test-mix/run-mix-test-stale ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
   (shut-up
-   (alchemist-mix-test-stale))
+   (apprentice-mix-test-stale))
   ;; CI runs multiple elixir versions so check correct version here
-  (if (alchemist-utils-elixir-version-check-p 1 3 0)
-      (should (equal "--stale" alchemist-last-run-test))
-    (should (equal "" alchemist-last-run-test)))
+  (if (apprentice-utils-elixir-version-check-p 1 3 0)
+      (should (equal "--stale" apprentice-last-run-test))
+    (should (equal "" apprentice-last-run-test)))
   (delay 2.1 (lambda ()
-               (should (alchemist-report--last-run-successful-p))))
+               (should (apprentice-report--last-run-successful-p))))
   (wait 2.1))
 
-(provide 'alchemist-mix-test)
+(provide 'apprentice-mix-test)
 
-;;; alchemist-goto-test.el ends here
+;;; apprentice-goto-test.el ends here

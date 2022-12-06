@@ -1,4 +1,8 @@
-;;; alchemist-mix-test.el --- -*- lexical-binding: t; -*-
+;;; apprentice-phoenix-test.el ---
+
+;; Copyright © 2014-2017 Samuel Tonini
+;;
+;; Author: Samuel Tonini <tonini.samuel@gmail.com>
 
 ;; This file is not part of GNU Emacs.
 
@@ -19,15 +23,16 @@
 
 ;;; Code:
 
-(ert-deftest match-prompt ()
-  (let ((prompt alchemist-iex-prompt-regexp))
-    (should (equal 0 (string-match prompt "iex(1)>")))
-    (should (equal 0 (string-match prompt "iex(123)>")))
-    (should (equal 0 (string-match prompt "...(1)>")))
-    (should (equal nil (string-match prompt "abc(1)>")))
-    (should (equal nil (string-match prompt " iex(1)>")))
-    (should (equal nil (string-match prompt "iex>")))))
+(ert-deftest apprentice-phoenix-test/a-phoenix-project ()
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "web")
+   (should (apprentice-phoenix-project-p))))
 
-(provide 'alchemist-iex-test)
+(ert-deftest apprentice-phoenix-test/no-phoenix-project ()
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "lib")
+   (should-not (apprentice-phoenix-project-p))))
 
-;;; alchemist-iex-test.el ends here
+(provide 'apprentice-phoenix-test)
