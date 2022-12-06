@@ -81,4 +81,6 @@
 (require 'apprentice)
 (require 'ert)
 
+(provide 'apprentice-test-helper)
+
 ;;; test-helper.el ends here

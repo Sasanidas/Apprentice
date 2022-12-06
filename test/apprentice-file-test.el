@@ -22,6 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest apprentice-file/list-files-from-directory ()
   (with-sandbox
@@ -33,6 +34,8 @@
    (f-touch "lib/path/foo.ex")
    (should (equal (apprentice-file-read-dir (apprentice-project-root) "lib")
                   '("lib/another.ex" "lib/file.ex" "lib/path/foo.ex")))))
+
+(ert t)
 
 (provide 'apprentice-file-test)
 

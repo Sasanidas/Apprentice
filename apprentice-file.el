@@ -24,6 +24,7 @@
 ;; Functionality to work with directory content.
 
 ;;; Code:
+(require 'cl-lib)
 
 (defgroup apprentice-file nil
   "Functionality to work with directory content."
@@ -40,17 +41,17 @@
 (defun apprentice-file-read-dir (root directory)
   "Return all files in DIRECTORY and use ROOT as `default-directory'."
   (let ((default-directory root))
-    (-map (lambda (file) (file-relative-name file root))
-          (apprentice-file--files-from directory))))
+    (mapcar (lambda (file) (file-relative-name file root))
+	    (apprentice-file--files-from directory))))
 
 (defun apprentice-file--files-from (directory)
-  (--mapcat
-   (if (file-directory-p it)
-       (unless (or (equal (file-relative-name it directory) "..")
-                   (equal (file-relative-name it directory) "."))
-         (apprentice-file--files-from it))
-     (list it))
-   (directory-files directory t)))
+  (when directory
+    (cl-loop for d in (directory-files directory t)
+	     if (file-directory-p d)
+	     nconc (unless (or (equal (file-relative-name d directory) "..")
+			       (equal (file-relative-name d directory) "."))
+		     (apprentice-file--files-from d))
+	     else nconc (list d))))
 
 (provide 'apprentice-file)
 
