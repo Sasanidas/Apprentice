@@ -24,6 +24,6 @@ defmodule Alchemist.Server.IO do
   end
 
   def read_line do
-    IO.gets("") |> String.trim_trailing()
+    IO.gets("") |> String.rstrip()
   end
 end

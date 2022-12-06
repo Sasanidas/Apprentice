@@ -37,8 +37,7 @@
 (defun alchemist-phoenix-project-p ()
   "Return non-nil if `default-directory' is inside a Phoenix project."
   (and (alchemist-project-p)
-       (file-directory-p (concat (alchemist-project-root) "lib/" (alchemist-phoenix--app-name) "_web"))
-       (file-directory-p (concat (alchemist-project-root) "lib/" (alchemist-phoenix--app-name)))))
+       (file-directory-p (concat (alchemist-project-root) "web"))))
 
 (defun alchemist-phoenix-find-dir (directory)
   (unless (alchemist-phoenix-project-p)
@@ -47,47 +46,43 @@
 
 (defun alchemist-phoenix-find-web ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web")))
+  (alchemist-phoenix-find-dir "web"))
 
 (defun alchemist-phoenix-find-views ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/views")))
+  (alchemist-phoenix-find-dir "web/views"))
 
 (defun alchemist-phoenix-find-controllers ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/controllers")))
+  (alchemist-phoenix-find-dir "web/controllers"))
 
 (defun alchemist-phoenix-find-channels ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/channels")))
+  (alchemist-phoenix-find-dir "web/channels"))
 
 (defun alchemist-phoenix-find-templates ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/templates")))
+  (alchemist-phoenix-find-dir "web/templates"))
 
 (defun alchemist-phoenix-find-models ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/models")))
+  (alchemist-phoenix-find-dir "web/models"))
 
 (defun alchemist-phoenix-find-static ()
   (interactive)
-  (alchemist-phoenix-find-dir (concat "lib/" (alchemist-phoenix--app-name) "_web/static")))
+  (alchemist-phoenix-find-dir "web/static"))
 
 (defun alchemist-phoenix-routes (&optional prefix)
   (interactive)
-  "Run the Mix task 'phx.routes' and list all available Phoenix routes."
-  (alchemist-mix-execute '("phx.routes") prefix))
+  "Run the Mix task 'phoenix.routes' and list all available Phoenix routes."
+  (alchemist-mix-execute '("phoenix.routes") prefix))
 
 (defun alchemist-phoenix-router ()
   "Open the 'router.ex' file from 'web' directory."
   (interactive)
   (unless (alchemist-phoenix-project-p)
     (error "Could not find an Phoenix Mix project root."))
-  (find-file (concat (alchemist-project-root) "lib/" (alchemist-phoenix--app-name) "_web/router.ex")))
-
-(defun alchemist-phoenix--app-name ()
-  "Determines the Phoenix app name."
-  (file-name-nondirectory (directory-file-name (alchemist-project-root))))
+  (find-file (concat (alchemist-project-root) "web/router.ex")))
 
 (defvar alchemist-phoenix-command-map
   (let ((map (make-sparse-keymap)))
@@ -146,4 +141,5 @@ The following commands are available:
   (add-hook hook 'alchemist-phoenix-enable-mode))
 
 (provide 'alchemist-phoenix)
+
 ;;; alchemist-phoenix.el ends here

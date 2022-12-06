@@ -24,11 +24,15 @@
 ;;; Code:
 
 (ert-deftest alchemist-phoenix-test/a-phoenix-project ()
-  (cd "test/dummy_phoenix")
-  (should (alchemist-phoenix-project-p)))
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "web")
+   (should (alchemist-phoenix-project-p))))
 
 (ert-deftest alchemist-phoenix-test/no-phoenix-project ()
-  (cd "test/dummy_elixir")
-  (should-not (alchemist-phoenix-project-p)))
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "lib")
+   (should-not (alchemist-phoenix-project-p))))
 
 (provide 'alchemist-phoenix-test)
