@@ -1,4 +1,4 @@
-;;; apprentice-file-test.el ---
+;;; apprentice-file-test.el
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;;
@@ -34,8 +34,6 @@
    (f-touch "lib/path/foo.ex")
    (should (equal (apprentice-file-read-dir (apprentice-project-root) "lib")
                   '("lib/another.ex" "lib/file.ex" "lib/path/foo.ex")))))
-
-(ert t)
 
 (provide 'apprentice-file-test)
 

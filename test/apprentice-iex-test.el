@@ -19,6 +19,8 @@
 
 ;;; Code:
 
+(require 'apprentice-test-helper)
+
 (ert-deftest match-prompt ()
   (let ((prompt apprentice-iex-prompt-regexp))
     (should (equal 0 (string-match prompt "iex(1)>")))

@@ -66,6 +66,7 @@
 (require 'apprentice-mix)
 (require 'apprentice-hex)
 (require 'apprentice-hooks)
+(require 'apprentice-execute)
 (require 'apprentice-iex)
 (require 'apprentice-compile)
 (require 'apprentice-refcard)

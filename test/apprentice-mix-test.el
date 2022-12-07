@@ -22,6 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (defun prepare-test-report-buffer ()
   (when (process-live-p (get-buffer-process (get-buffer apprentice-test-report-buffer-name)))
@@ -30,8 +31,7 @@
 (ert-deftest test-mix/run-mix-test ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
-  (shut-up
-    (apprentice-mix-test))
+  (apprentice-mix-test)
   (should (equal "" apprentice-last-run-test))
   (delay 2.0 (lambda ()
                (should (apprentice-report--last-run-successful-p))))
@@ -40,8 +40,7 @@
 (ert-deftest test-mix/run-mix-test-file ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
-  (shut-up
-    (apprentice-mix-test-file "dummy_elixir_test.exs"))
+  (apprentice-mix-test-file "dummy_elixir_test.exs")
   (should (equal (expand-file-name "dummy_elixir_test.exs") apprentice-last-run-test))
   (delay 2.0 (lambda ()
                (should (apprentice-report--last-run-successful-p))))
@@ -50,8 +49,7 @@
 (ert-deftest test-mix/run-mix-test-stale ()
   (prepare-test-report-buffer)
   (cd "test/dummy_elixir/test/")
-  (shut-up
-   (apprentice-mix-test-stale))
+  (apprentice-mix-test-stale)
   ;; CI runs multiple elixir versions so check correct version here
   (if (apprentice-utils-elixir-version-check-p 1 3 0)
       (should (equal "--stale" apprentice-last-run-test))
@@ -62,4 +60,5 @@
 
 (provide 'apprentice-mix-test)
 
-;;; apprentice-goto-test.el ends here
+;;; apprentice-mix-test.el ends here
+

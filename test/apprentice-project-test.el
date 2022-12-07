@@ -22,6 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest test-project-root/no-argument ()
   "Should use `default-directory' when no argument."
@@ -147,3 +148,5 @@
    (should (equal nil (apprentice-project-elixir-root)))))
 
 (provide 'apprentice-project-tests)
+
+;;; apprentice-project-test.el ends here

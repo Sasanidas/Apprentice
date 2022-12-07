@@ -24,6 +24,7 @@
 ;;
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest test-inside-string-p ()
   (should (with-temp-buffer
@@ -277,7 +278,7 @@ end")
                    (goto-line-non-inter 10)
                    (apprentice-scope-import-modules)))))
 
-(ert-deftest test-scope-extract-module ()
+(ert-deftest test-scope-extract-module-1 ()
   (should (equal (apprentice-scope-extract-function ":gen_tcp.accept")
                  "accept"))
   (should (equal (apprentice-scope-extract-function ":erlang")
@@ -297,7 +298,7 @@ end")
   (should (equal (apprentice-scope-extract-function "String.Chars.Atom")
                  nil)))
 
-(ert-deftest test-scope-extract-module ()
+(ert-deftest test-scope-extract-module-2 ()
   (should (equal (apprentice-scope-extract-module ":gen_tcp.accept")
                  ":gen_tcp"))
   (should (equal (apprentice-scope-extract-module ":erlang")
@@ -372,5 +373,6 @@ end")
                    (apprentice-scope-alias-full-path "")))))
 
 (provide 'apprentice-scope-test)
+
 
 ;;; apprentice-scope-test.el ends here

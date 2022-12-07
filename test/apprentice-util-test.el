@@ -22,6 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest test-cmdlist-runner-builder ()
   (should (equal (apprentice-utils-build-command "mix help")

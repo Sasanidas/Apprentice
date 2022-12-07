@@ -1,4 +1,5 @@
-(let* ((project-files-list '("apprentice-eval-test.el"
+(let* ((project-files-list '("apprentice-test-helper.el"
+			     "apprentice-eval-test.el"
 			     "apprentice-file-test.el"
 			     "apprentice-help-test.el"
 			     "apprentice-iex-test.el"
@@ -22,3 +23,5 @@
   (mapc (lambda (test-file)
 	  (load (expand-file-name test-file project-test-path) nil t))
 	project-files-list))
+
+(ert-run-tests-batch-and-exit)

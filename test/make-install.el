@@ -1,6 +1,7 @@
 ;; List of the all the dependencies, including the dev dependencies
 (defconst dev-packages '(ert package-lint
-			     dash s
+			     f dash s
+			     company
 			     elixir-mode pkg-info))
 
 ;; Initialize package.el

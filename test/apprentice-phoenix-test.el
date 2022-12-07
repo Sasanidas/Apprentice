@@ -22,6 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest apprentice-phoenix-test/a-phoenix-project ()
   (with-sandbox
@@ -35,4 +36,7 @@
    (f-mkdir "lib")
    (should-not (apprentice-phoenix-project-p))))
 
+
 (provide 'apprentice-phoenix-test)
+
+;;; apprentice-phoenix-test.el ends here

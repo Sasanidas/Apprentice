@@ -24,6 +24,7 @@
 ;;
 
 ;;; Code:
+(require 'apprentice-test-helper)
 
 (ert-deftest apprentice-interact/insert-string-as-comment ()
   (should (equal "
@@ -41,6 +42,7 @@ sum.(21, 33)")
                  (with-temp-buffer
                    (apprentice-interact-insert-as-comment "IO.puts 1 + 1")
                    (buffer-substring-no-properties (point-min) (point-max))))))
+
 
 (provide 'apprentice-interact-test)
 

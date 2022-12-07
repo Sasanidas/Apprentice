@@ -25,6 +25,8 @@
 
 ;;; Code:
 
+(require 'apprentice-test-helper)
+
 (defun apprentice-test-current-position ()
   (interactive)
   (message "current position > %s"))
@@ -100,7 +102,7 @@ defmodule MyTest do
   end
 end
 ")
-                   (-map 'car (apprentice-test-mode--tests-in-buffer))))))
+                   (mapcar 'car (apprentice-test-mode--tests-in-buffer))))))
 
 (provide 'apprentice-test-mode-test)
 
