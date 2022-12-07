@@ -14,18 +14,18 @@ lint       -- run package-lint in batch mode\n\
 help       -- print this message\n"
 
 package: *.el
-	@ver=`grep -o "Version: .*" clede.el | cut -c 10-`; \
-	tar czvf clede-$$ver.tar.gz --mode 644 $$(find . -name \*.el)
+	@ver=`grep -o "Version: .*" apprentice.el | cut -c 10-`; \
+	tar czvf apprentice-$$ver.tar.gz --mode 644 $$(find . -name \*.el)
 
 elpa: *.el
-	@version=`grep -o "Version: .*" clede.el | cut -c 10-`; \
-	dir=clede-$$version; \
+	@version=`grep -o "Version: .*" apprentice.el | cut -c 10-`; \
+	dir=apprentice-$$version; \
 	mkdir -p "$$dir"; \
-	cp $$(find . -name \*.el) clede-$$version; \
-	echo "(define-package \"clede\" \"$$version\" \
+	cp $$(find . -name \*.el) apprentice-$$version; \
+	echo "(define-package \"apprentice\" \"$$version\" \
 	\"Modular in-buffer completion framework\")" \
-	> "$$dir"/clede-pkg.el; \
-	tar cvf clede-$$version.tar --mode 644 "$$dir"
+	> "$$dir"/apprentice-pkg.el; \
+	tar cvf apprentice-$$version.tar --mode 644 "$$dir"
 
 clean:
 	@rm -rf *.elc ert.el .elpa/ $$(find . -print | grep -i ".elc")
@@ -37,9 +37,9 @@ make-test:
 test: make-test clean
 
 compile:
-	${EMACS} --batch -l test/make-install.el -L . -f batch-byte-compile clede.el $$(find . -print | grep -i "clede-")
+	${EMACS} --batch -l test/make-install.el -L . -f batch-byte-compile apprentice.el $$(find . -print | grep -i "apprentice-")
 
 compile-test: compile clean
 
 lint:
-	${EMACS} --batch -l test/make-install.el -f package-lint-batch-and-exit $$(find . -print | grep -i "clede-")
+	${EMACS} --batch -l test/make-install.el -f package-lint-batch-and-exit $$(find . -print | grep -i "apprentice-")
