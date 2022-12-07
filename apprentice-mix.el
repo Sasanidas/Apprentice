@@ -56,8 +56,8 @@
   :group 'apprentice-mix)
 
 (defcustom apprentice-mix-env nil
-  "The default mix env to run mix commands with.  If nil, the mix env is
-not set explicitly."
+  "The default mix env to run mix commands with.
+If nil, the mix env is not set explicitly."
   :type '(string boolean)
   :group 'apprentice-mix)
 
@@ -158,8 +158,8 @@ When no tests had been run before calling this function, do nothing."
     (message "No tests have been run yet")))
 
 (defun apprentice-mix-compile (command &optional prefix)
-  "Compile the whole elixir project. Prompt for the mix env if the prefix
-arg is set."
+  "Compile the whole elixir project with COMMAND.
+Prompt for the mix env if PREFIX arg is set."
   (interactive "Mmix compile: \nP")
   (apprentice-mix-execute (list "compile" command) prefix))
 
@@ -188,8 +188,8 @@ When no mix task had been run before calling this function, do nothing."
   (interactive)
   (if apprentice-mix-last-task-command
       (apprentice-report-run apprentice-mix-last-task-command
-			    apprentice-mix-process-name
-			    apprentice-mix-buffer-name 'apprentice-mix-mode)
+			     apprentice-mix-process-name
+			     apprentice-mix-buffer-name 'apprentice-mix-mode)
     (message "No mix task have been run yet")))
 
 ;; (defun apprentice-mix-filter (_process output)
@@ -203,13 +203,14 @@ When no mix task had been run before calling this function, do nothing."
 ;;         (setq apprentice-mix-filter-output nil)
 ;;         (apprentice-mix-execute (list command) current-prefix-arg)))))
 
+;;TODO: Use `define-compilation-mode'
 (define-derived-mode apprentice-mix-mode fundamental-mode "Mix Mode"
   "Major mode for presenting Mix tasks.
 
 \\{apprentice-mix-mode-map}"
   (setq buffer-read-only t)
-  (setq-local truncate-lines t)
-  (setq-local electric-indent-chars nil))
+  (setq-local truncate-lines t
+	      electric-indent-chars nil))
 
 (defun apprentice-mix-execute (command-list &optional prefix)
   "Run a mix task specified by COMMAND-LIST.

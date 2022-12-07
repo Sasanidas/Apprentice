@@ -136,13 +136,13 @@
                   "my_view_test.exs"))))
 
 (ert-deftest apprentice-project/inside-elixir-codebase ()
-  (setq apprentice-goto-elixir-source-dir apprentice-sandbox-path)
+  (setq apprentice-project-elixir-source-dir apprentice-sandbox-path)
   (with-sandbox
    (should (apprentice-project-elixir-p))
    (should (equal (apprentice-project-elixir-root) apprentice-sandbox-path))))
 
 (ert-deftest apprentice-project/not-inside-elixir-codebase ()
-  (setq apprentice-goto-elixir-source-dir nil)
+  (setq apprentice-project-elixir-source-dir nil)
   (with-sandbox
    (should-not (apprentice-project-elixir-p))
    (should (equal nil (apprentice-project-elixir-root)))))

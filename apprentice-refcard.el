@@ -26,8 +26,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
-(require 's)
 (require 'tabulated-list)
 (require 'apprentice-phoenix)
 
@@ -58,12 +56,13 @@
 
 (defun apprentice-refcard--get-keybinding (function-name)
   (let* ((keys (where-is-internal (intern function-name)))
-         (keys (-map (lambda (k)
-                       (let ((key (format "%s" k)))
-                         (if (string-match-p "menu-bar" key)
-                             nil
-                           k))) keys))
-         (keys (-remove 'null keys)))
+         (keys (mapcar (lambda (k)
+			 (let ((key (format "%s" k)))
+			   (if (string-match-p "menu-bar" key)
+			       nil
+			     k)))
+		       keys))
+         (keys (cl-remove 'null keys)))
     (if keys
         (progn
           (mapconcat (lambda (k) (key-description k)) keys " , "))
@@ -191,23 +190,25 @@
 (defun apprentice-refcard--describe-funtion-at-point ()
   (interactive)
   (let ((function-name (get-text-property (point) 'tabulated-list-id)))
-    (when (not (s-blank? function-name))
+    (when (not
+	   (or (null function-name)
+	       (string= "" function-name)))
       (describe-function (intern function-name)))))
 
 (defun apprentice-refcard--buffer ()
-  "Return apprentice-refcard buffer if it exists."
+  "Return `apprentice-refcard' buffer if it exists."
   (get-buffer apprentice-refcard--buffer-name))
 
 (define-derived-mode apprentice-refcard-mode tabulated-list-mode "Apprentice"
   "Apprentice refcard mode."
   (buffer-disable-undo)
   (kill-all-local-variables)
-  (setq truncate-lines t)
-  (setq mode-name "Apprentice-Refcard")
+  (setq truncate-lines t
+	mode-name "Apprentice-Refcard")
   (setq-local apprentice-test-status-modeline nil)
   (use-local-map apprentice-refcard-mode-map)
-  (setq tabulated-list-format apprentice-refcard-list-format)
-  (setq tabulated-list-entries 'apprentice-refcard--tabulated-list-entries)
+  (setq tabulated-list-format apprentice-refcard-list-format
+	tabulated-list-entries 'apprentice-refcard--tabulated-list-entries)
   (tabulated-list-print))
 
 ;;;###autoload

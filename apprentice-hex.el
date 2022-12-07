@@ -27,6 +27,8 @@
 
 (require 'json)
 (require 'cl-lib)
+(require 'apprentice-project)
+(require 'apprentice-interact)
 
 (defgroup apprentice-hex nil
   "Interface to the Hex package manager API."
@@ -97,22 +99,23 @@
                        'action (lambda (x) (browse-url (button-get x 'url)))
                        'url (replace-regexp-in-string "\\(api/\\|releases/\\)" "" latest-version-url))
         (insert ")\n\n")
-        (mapcar (lambda (release)
-		  (let ((version (cdr (assoc 'version release)))
-			(url (cdr (assoc 'url release)))
-			(date (date-to-time (cdr (assoc 'inserted_at release)))))
-		    (insert-button version
-				   'action (lambda (x) (browse-url (button-get x 'url)))
-				   'url (replace-regexp-in-string "\\(api/\\|releases/\\)" "" url))
-		    (insert (format "     (%s %s)"
-				    (propertize "released on" 'face font-lock-string-face)
-				    (format-time-string "%Y-%m-%d" date)))
-		    (insert "   (")
-		    (insert-button "docs"
-				   'face font-lock-constant-face
-				   'action (lambda (x) (browse-url (button-get x 'url)))
-				   'url (format "%s/%s/%s" apprentice-hexdoc-url package-name version))
-		    (insert ")\n"))) releases)
+        (mapc (lambda (release)
+		(let ((version (cdr (assoc 'version release)))
+		      (url (cdr (assoc 'url release)))
+		      (date (date-to-time (cdr (assoc 'inserted_at release)))))
+		  (insert-button version
+				 'action (lambda (x) (browse-url (button-get x 'url)))
+				 'url (replace-regexp-in-string "\\(api/\\|releases/\\)" "" url))
+		  (insert (format "     (%s %s)"
+				  (propertize "released on" 'face font-lock-string-face)
+				  (format-time-string "%Y-%m-%d" date)))
+		  (insert "   (")
+		  (insert-button "docs"
+				 'face font-lock-constant-face
+				 'action (lambda (x) (browse-url (button-get x 'url)))
+				 'url (format "%s/%s/%s" apprentice-hexdoc-url package-name version))
+		  (insert ")\n")))
+	      releases)
         (align-regexp (point-min) (point-max) (concat "\\(\\s-*\\)" "    (") 1 1 t)
         (goto-char (point-min))
         (apprentice-hex-mode)))
@@ -249,7 +252,7 @@
 		       deps))
          (deps (sort (copy-sequence deps) 'equal)))
     (unless (string-match-p "\s*defp? deps do" mix-content)
-      (error "No dependency informations available in 'mix.exs'"))
+      (error "No dependency information available in 'mix.exs'"))
     (mapcar (lambda (x) (string-split x "," t " ")) deps)))
 
 (defun apprentice-hex-all-dependencies ()
@@ -259,11 +262,11 @@
 	 (content (with-temp-buffer
 		    (goto-char (point-min))
 		    (erase-buffer)
-		    (mapcar (lambda (dep)
-			      (insert (car dep))
-			      (insert (format " %s"(cadr dep)))
-			      (insert "\n"))
-			    deps)
+		    (mapc (lambda (dep)
+			    (insert (car dep))
+			    (insert (format " %s"(cadr dep)))
+			    (insert "\n"))
+			  deps)
 		    (goto-char (point-min))
 		    (align-regexp (point-min) (point-max) (concat "\\(\\s-*\\)" ", ") 1 1 t)
 		    (while (search-forward ", " nil t)
@@ -307,7 +310,7 @@
   (apprentice-hex--display-info-for package-name))
 
 (define-minor-mode apprentice-hex-mode
-  "Minor mode for displaying Hex package manager informations.
+  "Minor mode for displaying Hex package manager information.
 
 \\{apprentice-hex-mode-map}"
   :keymap apprentice-hex-mode-map

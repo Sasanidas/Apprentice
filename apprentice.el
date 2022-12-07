@@ -8,7 +8,7 @@
 ;; Maintainer: Fermin MF <fmfs@posteo.net>
 ;; URL: https://github.com/Sasanidas/Apprentice
 ;; Version: 0.5.0
-;; Package-Requires: ((elixir-mode "2.2.5") (dash "2.11.0") (emacs "24.4") (company "0.8.0") (s "1.11.0"))
+;; Package-Requires: ((elixir-mode "2.2.5") (emacs "24.4") (company "0.8.0"))
 ;; Keywords: languages, elixir, elixirc, mix, hex, apprentice
 
 ;; This file is not part of GNU Emacs.

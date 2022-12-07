@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-(require 'dash)
 (require 'apprentice-project)
 
 (defgroup apprentice-test-mode nil
@@ -225,12 +224,12 @@ macro) while the values are the position at which the test matched."
 (defun apprentice-test-mode--highlight-syntax ()
   (if apprentice-test-mode-highlight-tests
       (font-lock-add-keywords nil
-                              '(("^\s+\\(test\\)\s+" 1
-                                 font-lock-variable-name-face t)
-                                ("^\s+\\(assert[_a-z]*\\|refute[_a-z]*\\|flunk\\)\s+" 1
-                                 font-lock-type-face t)
-                                ("^\s+\\(assert[_a-z]*\\|refute[_a-z]*\\|flunk\\)\(" 1
-                                 font-lock-type-face t)))))
+		      '(("^\s+\\(test\\)\s+" 1
+			 font-lock-variable-name-face t)
+			("^\s+\\(assert[_a-z]*\\|refute[_a-z]*\\|flunk\\)\s+" 1
+			 font-lock-type-face t)
+			("^\s+\\(assert[_a-z]*\\|refute[_a-z]*\\|flunk\\)\(" 1
+			 font-lock-type-face t)))))
 
 ;; Public functions
 
@@ -239,8 +238,8 @@ macro) while the values are the position at which the test matched."
 
 \\{apprentice-test-report-mode-map}"
   (setq buffer-read-only t)
-  (setq-local truncate-lines t)
-  (setq-local electric-indent-chars nil))
+  (setq-local truncate-lines t
+	      electric-indent-chars nil))
 
 (defun apprentice-test-save-buffers ()
   "Save some modified file-visiting buffers."

@@ -26,7 +26,6 @@
 ;;; Code:
 
 (require 'comint)
-(require 'company)
 (require 'apprentice-key)
 (require 'apprentice-scope)
 (require 'apprentice-project)
@@ -61,8 +60,8 @@ iex(1)>
 
 (defvar apprentice-iex-mode-map
   (let ((map (nconc (make-sparse-keymap) comint-mode-map)))
-    (define-key map "\t" 'company-complete)
-    (define-key map (kbd "TAB") 'company-complete)
+    ;; (define-key map "\t" 'company-complete)
+    ;; (define-key map (kbd "TAB") 'company-complete)
     (define-key map (kbd (format "%s i r" apprentice-key-command-prefix)) 'apprentice-iex-open-input-ring)
     (define-key map (kbd (format "%s i c" apprentice-key-command-prefix)) 'apprentice-iex-clear-buffer)
     (define-key map (kbd (format "%s h e" apprentice-key-command-prefix)) 'apprentice-help-search-at-point)
@@ -121,21 +120,21 @@ setting up the IEx buffer."
     (apprentice-iex--send-command (apprentice-iex-process) str)))
 
 (defun apprentice-iex-send-current-line-and-go ()
-  "Sends the current line to the inferior IEx process
-and jump to the buffer."
+  "Sends the current line to the inferior IEx process.
+It also jump to the buffer."
   (interactive)
   (call-interactively 'apprentice-iex-send-current-line)
   (pop-to-buffer (process-buffer (apprentice-iex-process))))
 
 (defun apprentice-iex-send-region-and-go ()
-  "Sends the marked region to the inferior IEx process
-and jump to the buffer."
+  "Sends the marked region to the inferior IEx process.
+It also jump to the buffer."
   (interactive)
   (call-interactively 'apprentice-iex-send-region)
   (pop-to-buffer (process-buffer (apprentice-iex-process))))
 
 (defun apprentice-iex-send-region (beg end)
-  "Sends the marked region to the IEx process."
+  "Sends the marked region(BEG END) to the IEx process."
   (interactive (list (point) (mark)))
   (unless (and beg end)
     (error "The mark is not set now, so there is no region"))
@@ -166,11 +165,11 @@ and jump to the buffer."
 (defun apprentice-iex--send-command (proc str)
   (let ((lines (split-string str "\n" nil)))
     (with-current-buffer (process-buffer proc)
-      (-map (lambda (line)
-              (goto-char (process-mark proc))
-              (insert-before-markers (concat line "\n"))
-              (move-marker comint-last-input-end (point))
-              (comint-send-string proc (concat line "\n")))
+      (mapc (lambda (line)
+	      (goto-char (process-mark proc))
+	      (insert-before-markers (concat line "\n"))
+	      (move-marker comint-last-input-end (point))
+	      (comint-send-string proc (concat line "\n")))
 	    lines))))
 
 (defun apprentice-iex-spot-prompt (_string)
@@ -198,7 +197,7 @@ and jump to the buffer."
 
 ;;;###autoload
 (defun apprentice-iex-run (&optional arg)
-  "Start an IEx process.
+  "Start an IEx process with ARG.
 Show the IEx buffer if an IEx process is already run."
   (interactive "P")
   (let ((proc (apprentice-iex-process arg)))
@@ -206,9 +205,9 @@ Show the IEx buffer if an IEx process is already run."
 
 ;;;###autoload
 (defun apprentice-iex-project-run ()
-  "Start an IEx process with mix 'iex -S mix' in the
-context of an Elixir project.
-Show the IEx buffer if an IEx process is already run."
+  "Start an IEx process with mix 'iex -S mix'.
+in the context of an Elixir project.Show the IEx buffer if an
+IEx process is already run."
   (interactive)
   (if (apprentice-project-p)
       (let ((default-directory (apprentice-project-root)))

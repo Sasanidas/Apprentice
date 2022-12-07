@@ -25,13 +25,9 @@
 
 ;;; Code:
 
-(require 'dash)
-(require 's)
 (require 'ansi-color)
-(require 'apprentice-utils)
 (require 'apprentice-project)
 (require 'apprentice-scope)
-(require 'apprentice-goto)
 
 ;; (defgroup apprentice-help nil
 ;;   "Functionality for Elixir documentation lookup."

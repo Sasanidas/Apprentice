@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-(require 'apprentice-utils)
 (require 'apprentice-test-mode)
 (require 'apprentice-report)
 

@@ -26,10 +26,12 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
-(require 's)
-(require 'apprentice-utils)
 (require 'apprentice-file)
+
+(defcustom apprentice-project-elixir-source-dir ""
+  "Path to the elixir source code."
+  :type 'string
+  :group 'alchemist-goto)
 
 ;; Tell the byte compiler about autoloaded functions from packages
 (eval-when-compile
@@ -54,11 +56,13 @@
   (stringp (apprentice-project-elixir-root)))
 
 (defun apprentice-project-elixir-root (&optional dir)
-  "Return root directory of the Elixir source."
-  (if (and (not (s-blank? apprentice-goto-elixir-source-dir))
-	   (string-prefix-p (expand-file-name apprentice-goto-elixir-source-dir)
+  "Return root directory of the Elixir source DIR."
+  (if (and (not (or
+		 (null apprentice-project-elixir-source-dir)
+		 (string= "" apprentice-project-elixir-source-dir)))
+	   (string-prefix-p (expand-file-name apprentice-project-elixir-source-dir)
 			    (expand-file-name default-directory)))
-      apprentice-goto-elixir-source-dir
+      apprentice-project-elixir-source-dir
     nil))
 
 (defun apprentice-project-p ()
@@ -73,7 +77,7 @@
   "Return root directory of the current Elixir Mix project.
 
 It starts walking the directory tree to find the Elixir Mix root directory
-from `default-directory'. If DIR is non-nil it starts walking the
+from `default-directory'.If DIR is non-nil it starts walking the
 directory from there instead."
   (if (and apprentice-project-root-path-cache
 	   (string-prefix-p apprentice-project-root-path-cache
@@ -83,9 +87,11 @@ directory from there instead."
 	   (present-files (directory-files dir)))
       (cond ((apprentice-project-top-level-dir-p dir)
 	     nil)
-	    ((-contains-p present-files apprentice-project-hex-pkg-indicator)
+	    ((cl-member apprentice-project-hex-pkg-indicator present-files
+			:test #'string-equal)
 	     (apprentice-project-root (file-name-directory (directory-file-name dir))))
-	    ((-contains-p present-files apprentice-project-mix-project-indicator)
+	    ((cl-member apprentice-project-mix-project-indicator present-files
+			:test #'string-equal)
 	     (setq apprentice-project-root-path-cache dir)
 	     dir)
 	    (t
@@ -146,7 +152,7 @@ DIRECTORY is the place where the file under test is located."
         (message "No test file found.")))))
 
 (defun apprentice-project--create-test-for-current-file (filename buffer)
-  "Creates and populates a test module, FILENAME, for the code in BUFFER.
+  "Create and populates a test module, FILENAME, for the code in BUFFER.
 The module name given to the test module is determined from the name of the
 first module defined in BUFFER."
   (let* ((directory-name (file-name-directory filename))
@@ -158,7 +164,7 @@ first module defined in BUFFER."
      (find-file-other-window filename) test-module-name)))
 
 (defun apprentice-project--grok-module-name (buffer)
-  "Determines the name of the first module defined in BUFFER."
+  "Determine the name of the first module defined in BUFFER."
   (save-excursion
     (with-current-buffer buffer
       (goto-char (point-min))
@@ -166,7 +172,7 @@ first module defined in BUFFER."
       (match-string 1))))
 
 (defun apprentice-project--insert-test-boilerplate (buffer module)
-  "Inserts ExUnit boilerplate for MODULE in BUFFER.
+  "Insert ExUnit boilerplate for MODULE in BUFFER.
 Point is left in a convenient location."
   (with-current-buffer buffer
     (insert (concat "defmodule " module " do\n"

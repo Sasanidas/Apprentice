@@ -1,7 +1,7 @@
 ;; List of the all the dependencies, including the dev dependencies
 (defconst dev-packages '(ert package-lint
-			     f dash s
-			     company elixir-mode))
+			     f company
+			     elixir-mode))
 
 ;; Initialize package.el
 (setq package-user-dir

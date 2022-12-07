@@ -26,15 +26,15 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
-(require 's)
+(require 'apprentice-execute)
 
 (defun apprentice-utils-build-command (command-list)
   "Build the commands list for the runner."
-  (let* ((command-list (-flatten (if (stringp command-list)
-                                     (split-string command-list)
-                                   command-list)))
-         (command (-remove (lambda (e) (equal e "")) command-list)))
+  (let* ((command-list (flatten-list
+			(if (stringp command-list)
+			    (split-string command-list)
+			  command-list)))
+         (command (cl-remove "" command-list :test #'string-equal)))
     (mapconcat 'concat command " ")))
 
 (defun apprentice-utils-count-char-occurence (regexp str)
@@ -54,16 +54,20 @@
   (replace-regexp-in-string "\\.$" "" string))
 
 (defun apprentice-utils-prepare-aliases-for-elixir (aliases)
-  (let* ((aliases (-map (lambda (a)
-                            (let ((module (apprentice-utils-remove-dot-at-the-end (car a)))
-                                  (alias (apprentice-utils-remove-dot-at-the-end (car (cdr a)))))
-                            (if (not (or (s-blank? alias)
-                                         (string= alias module)))
-                                (format "{%s, %s}"
-                                        (if (s-blank? alias)
-                                            module
-                                          alias)
-                                        module)))) aliases))
+  (let* ((aliases (mapcar (lambda (a)
+			    (let ((module (apprentice-utils-remove-dot-at-the-end (car a)))
+				  (alias (apprentice-utils-remove-dot-at-the-end (car (cdr a)))))
+			      (if (not (or
+					(or (null alias)
+					    (string= "" alias))
+					(string= alias module)))
+				  (format "{%s, %s}"
+					  (if (or (null alias)
+						  (string= "" alias))
+					      module
+					    alias)
+					  module))))
+			  aliases))
          (aliases (mapconcat #'identity aliases ",")))
     (format "[%s]" aliases)))
 
@@ -90,7 +94,7 @@ module names (MyModule)."
 For example, convert 'my_app/my_module.ex' to 'MyApp.MyModule'."
   (let* ((path (file-name-sans-extension path))
          (path (split-string path "/"))
-         (path (-remove (lambda (str) (equal str "")) path)))
+         (path (cl-remove "" path :test #'string-equal)))
     (mapconcat #'apprentice-utils--snakecase-to-camelcase path ".")))
 
 (defun apprentice-utils-add-trailing-slash (path)
@@ -135,9 +139,8 @@ Call AFTER-FN after performing the search."
   "Return the current Elixir version on the system."
   (let* ((output (shell-command-to-string (format "%s --version" apprentice-execute-command)))
          (output (split-string output "\n"))
-         (output (-remove (lambda (string) (s-blank? string))
-                          output))
-         (version (-last-item output))
+         (output (cl-remove "" output :test #'string-equal))
+         (version (car (last output)))
          (version (replace-regexp-in-string "Elixir " "" version)))
     version))
 

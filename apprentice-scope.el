@@ -25,8 +25,7 @@
 
 ;;; Code:
 
-(require 'dash)
-(require 's)
+(require 'apprentice-utils)
 
 (defgroup apprentice-scope nil
   "Provides information about the Elixir source code context."
@@ -87,11 +86,11 @@ Example:
         (while (and (not found-flag-p)
                     (re-search-backward apprentice-scope-defmodule-regex nil t))
           (when (not (apprentice-scope-inside-string-p))
-            (setq module-name (match-string 1))
-            (setq found-flag-p t))
-          (when (equal 1 (line-number-at-pos (point)))
-            (setq found-flag-p t)))
-        module-name))))
+            (setq module-name (match-string 1)
+		  found-flag-p t))
+	  (when (equal 1 (line-number-at-pos (point)))
+	    (setq found-flag-p t)))
+	module-name))))
 
 (defun apprentice-scope-aliases ()
   "Return aliases from the current module."
@@ -110,8 +109,10 @@ Example:
             (let* ((alias (match-string 1))
                    (as (if (match-string 3) (match-string 3) nil))
                    (as (if as as (car (last (split-string alias "\\."))))))
-              (setq aliases (append aliases (list (list (apprentice-utils-remove-dot-at-the-end alias)
-                                                        (apprentice-utils-remove-dot-at-the-end as))))))))))
+              (setq aliases (append aliases (list
+					     (list
+					      (apprentice-utils-remove-dot-at-the-end alias)
+					      (apprentice-utils-remove-dot-at-the-end as))))))))))
     (save-excursion
       (when (apprentice-scope-inside-module-p)
         (end-of-line)
@@ -124,19 +125,21 @@ Example:
                  (equal context (apprentice-scope-module)))
             (let* ((prefix (match-string 1))
                    (alias-collection (if (match-string 2) (split-string (match-string 2) ",") nil)))
-              (-map (lambda (alias)
-                      (let* ((alias (replace-regexp-in-string "\s+" "" alias))
-                             (namespace (format "%s.%s" prefix alias)))
-                        (setq aliases (append aliases (list (list (apprentice-utils-remove-dot-at-the-end namespace)
-                                                                  (apprentice-utils-remove-dot-at-the-end alias)))))))
-                    alias-collection))))))
+              (mapc (lambda (alias)
+		      (let* ((alias (replace-regexp-in-string "\s+" "" alias))
+			     (namespace (format "%s.%s" prefix alias)))
+			(setq aliases (append aliases (list (list (apprentice-utils-remove-dot-at-the-end namespace)
+								  (apprentice-utils-remove-dot-at-the-end alias)))))))
+		    alias-collection))))))
     aliases))
 
 (defun apprentice-scope--modules (regex)
   (let ((modules '())
         (context (apprentice-scope-module)))
     (save-excursion
-      (when (not (s-blank? context))
+      (when (not
+	     (or (null context)
+		 (string= "" context)))
         (while (re-search-backward regex nil t)
           (when (and (match-string 1)
                      (not (apprentice-scope-inside-string-p))
@@ -161,7 +164,7 @@ Example:
     (push current modules)
     (push use modules)
     (push import modules)
-    (-flatten modules)))
+    (flatten-list modules)))
 
 (defun apprentice-scope-extract-module (expr)
   "Extract module from EXPR."
@@ -184,11 +187,12 @@ Example:
 
 (defun apprentice-scope-alias-full-path (module)
   "Solve the full path for the MODULE alias."
-  (if (not (s-blank? module))
-      (let* ((aliases (-map (lambda (m)
-                              (when (string-match-p (format "^%s" (car (cdr m))) module)
-                                (replace-regexp-in-string (format "^%s" (car (cdr m))) (car m) module t)))
-                            (apprentice-scope-aliases)))
+  (if (not (or (null module)
+	       (string= "" module)))
+      (let* ((aliases (mapcar (lambda (m)
+				(when (string-match-p (format "^%s" (car (cdr m))) module)
+				  (replace-regexp-in-string (format "^%s" (car (cdr m))) (car m) module t)))
+			      (apprentice-scope-aliases)))
              (aliases (delete nil aliases)))
         (if aliases
             (car aliases)
