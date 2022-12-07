@@ -1,4 +1,4 @@
-
+#+html: <p align="left"><img width=200 src="images/apprentice.png" /></p>
 #+html: <blockquote> Elixir Tooling Integration Into Emacs </blockquote>
 
 Apprentice is a fork [[https://github.com/tonini/alchemist.el][alchemist.el]], similar in some aspects but quite different in others.
