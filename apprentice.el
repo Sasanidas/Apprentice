@@ -1,12 +1,14 @@
 ;;; apprentice.el --- Elixir tooling integration into Emacs
 
 ;; Copyright © 2014-2017 Samuel Tonini
+;; Copyright © 2022 Fermin MF
 ;;
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com>
-;; Maintainer: Samuel Tonini <tonini.samuel@gmail.com>
-;; URL: http://www.github.com/tonini/apprentice.el
-;; Version: 1.8.2
-;; Package-Requires: ((elixir-mode "2.2.5") (dash "2.11.0") (emacs "24.4") (company "0.8.0") (pkg-info "0.4") (s "1.11.0"))
+;; Author: Fermin MF <fmfs@posteo.net>
+;; Maintainer: Fermin MF <fmfs@posteo.net>
+;; URL: https://github.com/Sasanidas/Apprentice
+;; Version: 0.5.0
+;; Package-Requires: ((elixir-mode "2.2.5") (dash "2.11.0") (emacs "24.4") (company "0.8.0") (s "1.11.0"))
 ;; Keywords: languages, elixir, elixirc, mix, hex, apprentice
 
 ;; This file is not part of GNU Emacs.
@@ -45,14 +47,14 @@
 ;;; Code:
 
 ;; Tell the byte compiler about autoloaded functions from packages
-(declare-function pkg-info-version-info "pkg-info" (package))
+
 
 (defgroup apprentice nil
   "Elixir Tooling Integration Into Emacs."
   :prefix "apprentice-"
   :group 'applications
-  :link '(url-link :tag "Website" "http://www.apprentice-elixir.org")
-  :link '(url-link :tag "Github" "https://github.com/tonini/apprentice.el")
+  :link '(url-link :tag "Website" "")
+  :link '(url-link :tag "Github" "https://github.com/Sasanidas/Apprentice")
   :link '(emacs-commentary-link :tag "Commentary" "apprentice"))
 
 (defvar apprentice-mode-keymap nil)
@@ -74,8 +76,11 @@
 (require 'apprentice-phoenix)
 
 (defun apprentice-mode-hook ()
-  "Hook which enables `apprentice-mode'"
+  "Hook which enables `apprentice-mode'."
   (apprentice-mode 1))
+
+
+(defvar apprentice-version "0.5.0")
 
 (defun apprentice-version (&optional show-version)
   "Get the Apprentice version as string.
@@ -90,10 +95,7 @@ If the version number could not be determined, signal an error,
 if called interactively, or if SHOW-VERSION is non-nil, otherwise
 just return nil."
   (interactive (list t))
-  (let ((version (pkg-info-version-info 'apprentice)))
-    (when show-version
-      (message "Apprentice version: %s" version))
-    version))
+  (message "Apprentice version: %s" apprentice-version))
 
 (defun apprentice-elixir-version ()
   "Display the current Elixir version on the system."
