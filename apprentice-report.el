@@ -29,7 +29,7 @@
 (require 'apprentice-project)
 
 (defgroup apprentice-report nil
-  "Run command in a process and handles buffer output and display"
+  "Run command in a process and handles buffer output and display."
   :prefix "apprentice-report-"
   :group 'apprentice)
 
@@ -62,7 +62,8 @@
                  (buffer-name)))))))
 
 (defun apprentice-report--sentinel (process status)
-  "Sentinel for test report buffer."
+  "Sentinel for test report buffer.
+It checks the PROCESS STATUS."
   (if (memq (process-status process) '(exit signal))
       (let ((buffer (process-buffer process)))
         (if (null (buffer-name buffer))
@@ -94,7 +95,8 @@ Argument for the exit function is the STATUS and BUFFER of the finished process.
   (when (string-prefix-p "finished" apprentice-report--last-run-status) t))
 
 (defun apprentice-report-filter (process output)
-  "Process filter for report buffers."
+  "Process filter for report buffers.
+Checking the PROCESS OUTPUT."
   (with-current-buffer (process-buffer process)
     (let* ((buffer-read-only nil)
            (output (if (string= (process-name process) apprentice-test-report-process-name)
@@ -112,9 +114,10 @@ Argument for the exit function is the STATUS and BUFFER of the finished process.
   "Update the `mode-name' with the status of PROCESS."
   (with-current-buffer (process-buffer process)
     (when (stringp mode-name)
-      (setq-local mode-name (format "%s:%s"
-                                    (replace-regexp-in-string ":.+$" "" mode-name)
-                                    (process-status process))))))
+      (setq-local mode-name
+		  (format "%s:%s"
+			  (replace-regexp-in-string ":.+$" "" mode-name)
+			  (process-status process))))))
 
 (defun apprentice-report-interrupt-current-process ()
   "Interrupt the current running report process."
@@ -143,8 +146,8 @@ If there is already a running process, ask for interrupting it."
   "Enable MODE inside BUFFER."
   (with-current-buffer buffer
     (funcall mode)
-    (setq-local truncate-lines apprentice-test-truncate-lines)
-    (setq-local window-point-insertion-type t)))
+    (setq-local truncate-lines apprentice-test-truncate-lines
+		window-point-insertion-type t)))
 
 (defun apprentice-report-run (command process-name buffer-name mode &optional on-exit hidden)
   "Run COMMAND in a new process called PROCESS-NAME.

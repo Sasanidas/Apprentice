@@ -56,7 +56,8 @@
         (t (apprentice-compile (list apprentice-compile-command (expand-file-name filename))))))
 
 (defun apprentice-compile--read-command (command)
-  (read-shell-command "elixirc command: " (concat command " ")))
+  (read-shell-command
+   "elixirc command: " (format "%s " command)))
 
 ;; Public functions
 
@@ -70,13 +71,14 @@
   (interactive "Felixirc: ")
   (apprentice-compile--file (expand-file-name filename)))
 
-(define-derived-mode apprentice-compile-mode fundamental-mode "Elixir Compile Mode"
+;;TODO: Make the error regex
+(define-compilation-mode apprentice-compile-mode "Elixir Compile Mode"
   "Major mode for compiling Elixir files.
-
 \\{apprentice-compile-mode-map}"
+  (ansi-color-apply-on-region (point-min) (point-max))
   (setq buffer-read-only t)
-  (setq-local truncate-lines t)
-  (setq-local electric-indent-chars nil))
+  (setq-local truncate-lines t
+	      electric-indent-chars nil))
 
 (defun apprentice-compile (cmdlist)
   "Compile CMDLIST with elixirc."

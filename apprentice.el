@@ -215,16 +215,16 @@ Key bindings:
      ["Evaluate buffer and print" apprentice-eval-print-buffer]
      ["Evaluate quoted buffer" apprentice-eval-quoted-buffer]
      ["Evaluate quoted buffer and print" apprentice-eval-print-quoted-buffer])
-    ("Macroexpand"
-     ["Macro expand once current line" apprentice-macroexpand-once-current-line]
-     ["Macro expand once current line and print" apprentice-macroexpand-print-current-line]
-     ["Macro expand current line" apprentice-macroexpand-current-line]
-     ["Macro expand current line and print" apprentice-macroexpand-print-current-line]
-     "---"
-     ["Macro expand once region" apprentice-macroexpand-once-region]
-     ["Macro expand once region and print" apprentice-macroexpand-print-region]
-     ["Macro expand region" apprentice-macroexpand-region]
-     ["Macro expand region and print" apprentice-macroexpand-print-region])
+    ;; ("Macroexpand"
+    ;;  ["Macro expand once current line" apprentice-macroexpand-once-current-line]
+    ;;  ["Macro expand once current line and print" apprentice-macroexpand-print-current-line]
+    ;;  ["Macro expand current line" apprentice-macroexpand-current-line]
+    ;;  ["Macro expand current line and print" apprentice-macroexpand-print-current-line]
+    ;;  "---"
+    ;;  ["Macro expand once region" apprentice-macroexpand-once-region]
+    ;;  ["Macro expand once region and print" apprentice-macroexpand-print-region]
+    ;;  ["Macro expand region" apprentice-macroexpand-region]
+    ;;  ["Macro expand region and print" apprentice-macroexpand-print-region])
     ("Compile"
      ["Compile..." apprentice-compile]
      ["Compile this buffer" apprentice-compile-this-buffer]
