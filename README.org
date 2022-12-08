@@ -1,5 +1,6 @@
 #+html: <p align="left"><img width=200 src="images/apprentice.png" /></p>
 #+html: <blockquote> Elixir Tooling Integration Into Emacs </blockquote>
+[[https://img.shields.io/badge/license-GPL_3-green.svg]] 
 
 Apprentice is a fork [[https://github.com/tonini/alchemist.el][alchemist.el]], similar in some aspects but quite different in others.
 
@@ -32,11 +33,16 @@ For now, you can install this package by adding the files to the emacs load-path
 
 * Support
 
+
 If you hit any problems, please first ensure that you are using the latest version of this code,
 and that you have updated your packages to the most recent available versions.
 
 + To report bugs or feature requests: please use the [[https://github.com/Sasanidas/Apprentice/issues][issue tracker on Github]].
 + To talk about the project with people in real time: please join the #emacs-elixir channel on IRC.
+
+If you like what I do and want to support this project monetarily:
+#+html: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=fmfs%40posteo.net&item_name=Donation&currency_code=EUR"><img alt="pipeline status" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" /></a>
+
 
 * License [[https://img.shields.io/badge/license-GPL_3-green.svg]]
 
