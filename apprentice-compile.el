@@ -25,6 +25,7 @@
 
 ;;; Code:
 
+(require 'compile)
 (require 'apprentice-utils)
 (require 'apprentice-report)
 
