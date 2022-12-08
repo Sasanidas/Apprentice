@@ -104,7 +104,7 @@ For example, convert 'my_app/my_module.ex' to 'MyApp.MyModule'."
     path))
 
 (defun apprentice-utils-occur-in-buffer-p (buffer regex)
-  "Return non-nil if BUFFER contains at least one occurrence of REGEX."
+  "Return non-nil if BUFFER contain at least one occurrence of REGEX."
   (with-current-buffer buffer
     (save-excursion
       (save-match-data
@@ -137,12 +137,13 @@ Call AFTER-FN after performing the search."
 
 (defun apprentice-utils-elixir-version ()
   "Return the current Elixir version on the system."
-  (let* ((output (shell-command-to-string (format "%s --version" apprentice-execute-command)))
-         (output (split-string output "\n"))
-         (output (cl-remove "" output :test #'string-equal))
-         (version (car (last output)))
-         (version (replace-regexp-in-string "Elixir " "" version)))
-    (car (split-string version " "))))
+  (with-temp-buffer
+    (insert (shell-command-to-string
+	     (format "%s --version" apprentice-execute-command)))
+    (goto-char (point-min))
+    (buffer-substring-no-properties
+     (1+ (re-search-forward "Elixir"))
+     (- (re-search-forward "(") 2))))
 
 (defun apprentice-utils-elixir-version-check-p (supply-version &optional version)
   "Return t if VERSION is greater than of equal to SUPPLY-VERSION."
