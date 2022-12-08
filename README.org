@@ -26,9 +26,9 @@ For now, you can install this package by adding the files to the emacs load-path
 
 #  <kbd>M-x package-install [RET] apprentice [RET]</kbd> 
 
-#  # Documentation 
+* Documentation 
 
-#  Documentation is available [here](http://apprentice.readthedocs.org/). 
+ Documentation is available [[https://github.com/Sasanidas/Apprentice/tree/master/doc][here]]
 
 * Support
 
