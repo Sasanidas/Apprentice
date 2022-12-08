@@ -26,6 +26,8 @@
 ;;; Code:
 
 (require 'comint)
+(require 'cl-lib)
+(require 'pcase)
 (require 'apprentice-key)
 (require 'apprentice-scope)
 (require 'apprentice-project)
@@ -34,6 +36,14 @@
   "Interaction with an Elixir IEx process."
   :prefix "apprentice-iex-"
   :group 'apprentice)
+
+(defcustom apprentice-iex-type :comint-mode
+  "Type of buffer to use for IEx.
+This variable can take 2 values:
+ - :comint-mode for `comint-mode' (default)
+ - :vterm-mode to use `vterm-mode'(apprentice version)"
+  :type 'keyword
+  :group 'apprentice-iex)
 
 (defcustom apprentice-iex-program-name "iex"
   "The shell command for iex."
@@ -55,8 +65,11 @@ iex(1)>
 (defvar apprentice-iex-buffer nil
   "The buffer in which the Elixir IEx process is running.")
 
-(defvar apprentice-iex-mode-hook nil
-  "Hook for customizing `apprentice-iex-mode'.")
+(defvar apprentice-iex-comint-mode-hook nil
+  "Hook for customizing `apprentice-iex-comint-mode'.")
+
+(defvar apprentice-iex-vterm-mode-hook nil
+  "Hook for customizing `apprentice-iex-vterm-mode'.")
 
 (defvar apprentice-iex-mode-map
   (let ((map (nconc (make-sparse-keymap) comint-mode-map)))
@@ -64,12 +77,13 @@ iex(1)>
     ;; (define-key map (kbd "TAB") 'company-complete)
     (define-key map (kbd (format "%s i r" apprentice-key-command-prefix)) 'apprentice-iex-open-input-ring)
     (define-key map (kbd (format "%s i c" apprentice-key-command-prefix)) 'apprentice-iex-clear-buffer)
-    (define-key map (kbd (format "%s h e" apprentice-key-command-prefix)) 'apprentice-help-search-at-point)
-    (define-key map (kbd "M-.") 'apprentice-goto-definition-at-point)
+    ;;(define-key map (kbd (format "%s h e" apprentice-key-command-prefix)) 'apprentice-help-search-at-point)
+    ;;(define-key map (kbd "M-.") 'apprentice-goto-definition-at-point)
     map))
 
-(define-derived-mode apprentice-iex-mode comint-mode "Apprentice-IEx"
+(define-derived-mode apprentice-iex-comint-mode comint-mode "Apprentice-IEx"
   "Major mode for interacting with an Elixir IEx process.
+It uses `comint-mode' for REPL interaction.
 
 \\<apprentice-iex-mode-map>"
   nil "Apprentice-IEx"
@@ -79,10 +93,35 @@ iex(1)>
   (set (make-local-variable 'comint-input-sender) 'apprentice-iex--send-command)
   (add-hook 'comint-output-filter-functions 'apprentice-iex-spot-prompt nil t))
 
+(define-derived-mode apprentice-iex-vterm-mode vterm-mode "Apprentice-IEx"
+  "Major mode for interacting with an Elixir IEx process.
+It uses `vterm-mode' for REPL interaction.
+
+\\<apprentice-iex-mode-map>"
+  nil "Apprentice-IEx")
+
 (defun apprentice-iex-command (arg)
   (split-string-and-unquote
    (if (null arg) apprentice-iex-program-name
      (read-string "Command to run Elixir IEx: " (concat apprentice-iex-program-name arg)))))
+
+(cl-defmethod apprentice-iex--start-process (command (type (eql :comint-mode)))
+  (setq apprentice-iex-buffer
+        (apply 'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
+  (with-current-buffer apprentice-iex-buffer
+    (apprentice-iex-comint-mode)
+    (run-hooks 'apprentice-iex-mode-hook)))
+
+(cl-defmethod apprentice-iex--start-process (command (type (eql :vterm-mode)))
+  (setq apprentice-iex-buffer
+	(let ((buffer (generate-new-buffer "*Apprentice-IEx*")))
+	  (with-current-buffer buffer
+	    (apprentice-iex-vterm-mode))
+	  (pop-to-buffer buffer)))
+  (with-current-buffer apprentice-iex-buffer
+    (vterm-send-string (mapconcat 'identity command " "))
+    (vterm-send-return)
+    (run-hooks 'apprentice-iex-mode-hook)))
 
 (defun apprentice-iex-start-process (command)
   "Start an IEX process.
@@ -91,11 +130,7 @@ otherwise uses `apprentice-iex-program-name'.
 It runs the hook `apprentice-iex-mode-hook' after starting the process and
 setting up the IEx buffer."
   (interactive (list (apprentice-iex-command current-prefix-arg)))
-  (setq apprentice-iex-buffer
-        (apply 'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
-  (with-current-buffer apprentice-iex-buffer
-    (apprentice-iex-mode)
-    (run-hooks 'apprentice-iex-mode-hook)))
+  (apprentice-iex--start-process command apprentice-iex-type))
 
 (defun apprentice-iex-process (&optional arg)
   (or (if (buffer-live-p apprentice-iex-buffer)
@@ -157,20 +192,30 @@ It also jump to the buffer."
   (pop-to-buffer (process-buffer (apprentice-iex-process))))
 
 (defun apprentice-iex-reload-module ()
-  "Recompiles and reloads the current module in the IEx process."
+  "Recompile and reloads the current module in the IEx process."
   (interactive)
   (let ((str (format "r(%s)" (apprentice-scope-module))))
     (apprentice-iex--send-command (apprentice-iex-process) str)))
 
+
+(cl-defmethod apprentice-iex--command (proc (lines list) (type (eql :comint-mode)))
+  (with-current-buffer (process-buffer proc)
+    (cl-loop for line in lines
+	     do (progn
+		  (goto-char (process-mark proc))
+		  (insert-before-markers (concat line "\n"))
+		  (move-marker comint-last-input-end (point))
+		  (comint-send-string proc (concat line "\n"))))))
+
+(cl-defmethod apprentice-iex--command (proc (lines list) (type (eql :vterm-mode)))
+  (with-current-buffer (process-buffer proc)
+    (vterm-send-string
+     (mapconcat 'identity lines " "))
+    (vterm-send-return)))
+
 (defun apprentice-iex--send-command (proc str)
   (let ((lines (split-string str "\n" nil)))
-    (with-current-buffer (process-buffer proc)
-      (mapc (lambda (line)
-	      (goto-char (process-mark proc))
-	      (insert-before-markers (concat line "\n"))
-	      (move-marker comint-last-input-end (point))
-	      (comint-send-string proc (concat line "\n")))
-	    lines))))
+    (apprentice-iex--command proc lines apprentice-iex-type)))
 
 (defun apprentice-iex-spot-prompt (_string)
   (let ((proc (get-buffer-process (current-buffer))))
@@ -178,11 +223,21 @@ It also jump to the buffer."
       (save-excursion
         (goto-char (process-mark proc))))))
 
+(cl-defmethod apprentice-iex--clear-buffer ((type (eql :comint-mode)))
+  (with-current-buffer (process-buffer
+			(apprentice-iex-process))
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer))))
+
+(cl-defmethod apprentice-iex--clear-buffer ((type (eql :vterm-mode)))
+  (with-current-buffer (process-buffer
+			(apprentice-iex-process))
+    (vterm-clear)))
+
 (defun apprentice-iex-clear-buffer ()
   "Clear the current iex process buffer."
   (interactive)
-  (let ((comint-buffer-maximum-size 0))
-    (comint-truncate-buffer)))
+  (apprentice-iex--clear-buffer apprentice-iex-type))
 
 (defun apprentice-iex-open-input-ring ()
     "Open the buffer containing the input history."
@@ -200,6 +255,8 @@ It also jump to the buffer."
   "Start an IEx process with ARG.
 Show the IEx buffer if an IEx process is already run."
   (interactive "P")
+  (when (eq :vterm-mode apprentice-iex-type)
+    (require 'vterm))
   (let ((proc (apprentice-iex-process arg)))
     (pop-to-buffer (process-buffer proc))))
 
@@ -209,6 +266,8 @@ Show the IEx buffer if an IEx process is already run."
 in the context of an Elixir project.Show the IEx buffer if an
 IEx process is already run."
   (interactive)
+  (when (eq :vterm-mode apprentice-iex-type)
+    (require 'vterm))
   (if (apprentice-project-p)
       (let ((default-directory (apprentice-project-root)))
         (pop-to-buffer (process-buffer (apprentice-iex-process " -S mix"))))

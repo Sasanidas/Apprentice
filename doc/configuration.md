@@ -1,25 +1,25 @@
 ## Configuration
 
-There are some ways Alchemist can be adjusted that certain workflows operating differently.
+There are some ways Apprentice can be adjusted that certain workflows operating differently.
 
 ### Mix setup
 
 * Use a different shell command for mix.
 
 ```el
-(setq alchemist-mix-command "/usr/local/bin/mix")
+(setq apprentice-mix-command "/usr/local/bin/mix")
 ```
 
 * Use a different task for running tests.
 
 ```el
-(setq alchemist-mix-test-task "espec")
+(setq apprentice-mix-test-task "espec")
 ```
 
 * Use custom mix test task options.
 
 ```el
-(setq alchemist-mix-test-default-options '()) ;; default
+(setq apprentice-mix-test-default-options '()) ;; default
 ```
 
 * Use a different environment variable in which mix tasks will run.
@@ -29,7 +29,7 @@ But if you like to change the run of Mix task permanently to a specific environm
 through the variable.
 
 ```el
-(setq alchemist-mix-env "prod")
+(setq apprentice-mix-env "prod")
 ```
 
 ### IEx setup
@@ -37,7 +37,13 @@ through the variable.
 * Use a different shell command for iex.
 
 ```el
-(setq alchemist-iex-program-name "/usr/local/bin/iex") ;; default: iex
+(setq apprentice-iex-program-name "/usr/local/bin/iex") ;; default: iex
+```
+
+* Use vterm instead of comint-mode
+
+```el
+(setq apprentice-iex-type :vterm-mode) ;; default: iex
 ```
 
 ### Execute setup
@@ -45,7 +51,7 @@ through the variable.
 * Use a different shell command for elixir.
 
 ```el
-(setq alchemist-execute-command "/usr/local/bin/elixir") ;; default: elixir
+(setq apprentice-execute-command "/usr/local/bin/elixir") ;; default: elixir
 ```
 
 ### Compile setup
@@ -53,7 +59,7 @@ through the variable.
 * Use a different shell command for elixirc.
 
 ```el
-(setq alchemist-compile-command "/usr/local/bin/elixirc") ;; default: elixirc
+(setq apprentice-compile-command "/usr/local/bin/elixirc") ;; default: elixirc
 ```
 
 ### Modeline setup
@@ -61,7 +67,7 @@ through the variable.
 * Disable the change of the modeline color with the last test run status.
 
 ```el
-(setq alchemist-test-status-modeline nil)
+(setq apprentice-test-status-modeline nil)
 ```
 
 ### Keybindings
@@ -69,7 +75,7 @@ through the variable.
 * Use a different keybinding prefix than <kbd>C-c a</kbd>
 
 ```el
-(setq alchemist-key-command-prefix (kbd "C-c ,")) ;; default: (kbd "C-c a")
+(setq apprentice-key-command-prefix (kbd "C-c ,")) ;; default: (kbd "C-c a")
 ```
 
 ### Testing Mode
@@ -77,43 +83,43 @@ through the variable.
 * Disable the use of a more significant syntax highlighting on functions like `test`, `assert_*` and `refute_*`
 
 ```el
-(setq alchemist-test-mode-highlight-tests nil) ;; default t
+(setq apprentice-test-mode-highlight-tests nil) ;; default t
 ```
 
 * Don't ask to save changed file buffers before running tests.
 
 ```el
-(setq alchemist-test-ask-about-save nil)
+(setq apprentice-test-ask-about-save nil)
 ```
 
 * Don't change the color of the `mode-name` when test run failed or passed.
 
 ```el
-(setq alchemist-test-status-modeline nil)
+(setq apprentice-test-status-modeline nil)
 ```
 
 * Show compilation output in test report.
 
 ```el
-(setq alchemist-test-display-compilation-output t)
+(setq apprentice-test-display-compilation-output t)
 ```
 
 * Toggle truncating lines in test report.
 
 ```el
-(setq alchemist-test-truncate-lines nil) ;; default t
+(setq apprentice-test-truncate-lines nil) ;; default t
 ```
 
 ### Hooks
 
-* Run the whole test suite with `alchemist-mix-test` after saving a buffer.
+* Run the whole test suite with `apprentice-mix-test` after saving a buffer.
 
 ```el
-(setq alchemist-hooks-test-on-save t)
+(setq apprentice-hooks-test-on-save t)
 ```
 
-* Compile your project with `alchemist-mix-compile` after saving a buffer.
+* Compile your project with `apprentice-mix-compile` after saving a buffer.
 
 ```el
-(setq alchemist-hooks-compile-on-save t)
+(setq apprentice-hooks-compile-on-save t)
 ```

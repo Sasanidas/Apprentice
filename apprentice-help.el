@@ -25,9 +25,10 @@
 
 ;;; Code:
 
-(require 'ansi-color)
-(require 'apprentice-project)
-(require 'apprentice-scope)
+;; (require 'ansi-color)
+;; (require 'apprentice-project)
+;; (require 'apprentice-scope)
+;; (require 'apprentice-iex)
 
 ;; (defgroup apprentice-help nil
 ;;   "Functionality for Elixir documentation lookup."
@@ -56,18 +57,55 @@
 ;;   "Lookup Elixir documentation for SEARCH."
 ;;   (setq apprentice-help-current-search-text search)
 ;;   (setq apprentice-help-filter-output nil)
-;;   (if (not (s-blank? search))
-;;       (apprentice-server-complete-candidates
-;;        (apprentice-help--completion-server-arguments search)
-;;        #'apprentice-help-complete-filter-output)
+;;   (if (not (or (null search)
+;; 	       (string= "" search)))
+;;       (apprentice-help-display-doc )
+;;     (message "Not implemented")
 ;;     (message "No documentation for [%s] found." search)))
 
+;; (defun apprentice-help--comint-last-output (process)
+;;   (let ((proc process)
+;; 	(inhibit-read-only t)
+;; 	output)
+;;     (with-current-buffer (process-buffer proc)
+;;       (save-excursion
+;; 	(let ((pmark
+;; 	       (progn (goto-char (process-mark proc))
+;; 		      (forward-line 0)
+;; 		      (point-marker))))
+;; 	  (copy-region-as-kill comint-last-input-end pmark)
+;; 	  (setf output
+;; 		(buffer-substring-no-properties comint-last-input-end pmark))
+;; 	  (goto-char (process-mark proc)))))
+;;     ;; Output message and put back prompt
+;;     output))
+
+;; (defun apprentice-help--comint-restart-buffer (proc prev)
+;;   (let ((inhibit-read-only t))
+;;     (with-current-buffer (process-buffer proc)
+;;       (kill-region (point-min) (point-max))
+;;       (insert prev))))
+
+;; (defun apprentice-help--iex-get-all-modules ()
+;;   (let* ((proc (apprentice-iex-process))
+;; 	 (prev
+;; 	  (with-current-buffer (process-buffer proc)
+;; 	    (buffer-string)))
+;; 	 output)
+;;     (apprentice-iex--send-command
+;;      proc ":erlang.loaded() |> Enum.sort() |> inspect(limit: :infinity)")
+;;     (sit-for 0.2)
+;;     (setf output (apprentice-help--comint-last-output proc))
+;;     (with-current-buffer (process-buffer proc)
+;;       (comint-delete-output))
+;;     output))
+
 ;; (defun apprentice-help-no-doc-available-p (string)
-;;   "Return non-nil if STRING contains Elixir no documentation message."
+;;   "Return non-nil if STRING contain Elixir no documentation message."
 ;;   (or (string-match-p "No documentation for" string)
 ;;       (string-match-p "Could not load module" string)
 ;;       (string-match-p "it does not have Elixir-style docs" string)
-;;       (s-blank? string)))
+;;       (or (null string) (string= "" string))))
 
 ;; (defun apprentice-help-store-search-in-history ()
 ;;   "Store the last `apprentice-help-current-search-text' in `apprentice-help-search-history'."
@@ -80,8 +118,7 @@
 ;;         (buffer (get-buffer-create apprentice-help-buffer-name)))
 ;;     (cond
 ;;      ((apprentice-help-no-doc-available-p content)
-;;       (message (format "No documentation for [%s] found."
-;;                        apprentice-help-current-search-text)))
+;;       (message (format "No documentation for [%s] found." apprentice-help-current-search-text)))
 ;;      (t
 ;;       (apprentice-help-store-search-in-history)
 ;;       (with-current-buffer buffer
@@ -126,8 +163,8 @@
 ;;   (let* ((str (replace-regexp-in-string "^Elixir\\." "" str))
 ;;          (modules (split-string str))
 ;;          (modules (delete nil modules))
-;;          (modules (cl-sort modules 'string-lessp :key 'downcase))
-;;          (modules (-distinct modules)))
+;;          (modules (cl-sort modules 'string-lessp :key #'downcase))
+;;          (modules (cl-remove-duplicates modules :test #'equal)))
 ;;     modules))
 
 ;; (defun apprentice-help-minor-mode-key-binding-summary ()
@@ -146,41 +183,6 @@
 ;;            (propertize "?" 'face 'apprentice-help-key-face)
 ;;            "]-keys")))
 
-;; (defun apprentice-help--server-arguments (args)
-;;   (if (and (not (equal major-mode 'apprentice-iex-mode))
-;;            (not (bound-and-true-p apprentice-help-minor-mode)))
-;;       (let* ((modules (apprentice-utils-prepare-modules-for-elixir
-;;                        (apprentice-scope-all-modules))))
-;;         (format "{ \"%s\", [ context: Elixir, imports: %s, aliases: [] ] }" args modules))
-;;     (format "{ \"%s\", [ context: Elixir, imports: [], aliases: [] ] }" args)))
-
-;; (defun apprentice-help--completion-server-arguments (args)
-;;   "Build informations about the current context."
-;;   (if (and (not (equal major-mode 'apprentice-iex-mode))
-;;            (not (bound-and-true-p apprentice-help-minor-mode)))
-;;       (let* ((modules (apprentice-utils-prepare-modules-for-elixir
-;;                        (apprentice-scope-all-modules)))
-;;              (aliases (apprentice-utils-prepare-aliases-for-elixir
-;;                        (apprentice-scope-aliases))))
-;;         (format "{ \"%s\", [ context: Elixir, imports: %s, aliases: %s ] }" args modules aliases))
-;;     (format "{ \"%s\", [ context: Elixir, imports: [], aliases: [] ] }" args)))
-
-;; (defun apprentice-help-complete-filter-output (_process output)
-;;   (with-local-quit
-;;     (setq apprentice-help-filter-output (cons output apprentice-help-filter-output))
-;;     (if (apprentice-server-contains-end-marker-p output)
-;;         (let* ((string (apprentice-server-prepare-filter-output apprentice-help-filter-output))
-;;                (candidates (apprentice-complete--output-to-list
-;;                             (ansi-color-filter-apply string)))
-;;                (candidates (if (= (length candidates) 2)
-;;                                nil
-;;                              candidates)))
-;;           (setq apprentice-help-filter-output nil)
-;;           (if candidates
-;;               (let* ((search (apprentice-complete--completing-prompt apprentice-help-current-search-text candidates)))
-;;                 (setq apprentice-help-current-search-text search)
-;;                 (apprentice-server-help (apprentice-help--server-arguments search) #'apprentice-help-filter-output))
-;;             (apprentice-server-help (apprentice-help--server-arguments apprentice-help-current-search-text) #'apprentice-help-filter-output))))))
 
 ;; (defun apprentice-help-filter-output (_process output)
 ;;   (setq apprentice-help-filter-output (cons output apprentice-help-filter-output))
@@ -214,7 +216,7 @@
 ;;                          search))))
 ;;           (apprentice-help-lookup-doc (apprentice-utils-remove-dot-at-the-end search))))))
 
-;; ;; Public functions
+;; ;; ;; Public functions
 
 ;; (defun apprentice-help-search-at-point ()
 ;;   "Search through `apprentice-help' with the expression under the cursor.
@@ -224,7 +226,7 @@
 ;;   (interactive)
 ;;   (if mark-active
 ;;       (apprentice-help--search-marked-region (region-beginning) (region-end))
-;;       (apprentice-help--search-at-point)))
+;;     (apprentice-help--search-at-point)))
 
 ;; (defun apprentice-help-module ()
 ;;   "Load Elixir documentation for the module of the most recent SEARCH.
@@ -247,7 +249,6 @@
 ;;     (define-key map (kbd "m") #'apprentice-help-module)
 ;;     (define-key map (kbd "s") #'apprentice-help)
 ;;     (define-key map (kbd "h") #'apprentice-help-history)
-;;     (define-key map (kbd "M-.") #'apprentice-goto-definition-at-point)
 ;;     (define-key map (kbd "?") #'apprentice-help-minor-mode-key-binding-summary)
 ;;     map)
 ;;   "Keymap for `apprentice-help-minor-mode'.")
