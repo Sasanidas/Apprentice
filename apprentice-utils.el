@@ -142,20 +142,11 @@ Call AFTER-FN after performing the search."
          (output (cl-remove "" output :test #'string-equal))
          (version (car (last output)))
          (version (replace-regexp-in-string "Elixir " "" version)))
-    version))
+    (car (split-string version " "))))
 
-(defun apprentice-utils-elixir-version-check-p (major minor tiny &optional version)
-  "Returns t if the current elixir version is greater than or equal to the supplied version"
-  (let* ((version-string (or version (apprentice-utils-elixir-version)))
-         (version-list (split-string version-string "\\."))
-         (current-major (string-to-number (car version-list)))
-         (current-minor (string-to-number (car (cdr version-list))))
-         (current-tiny (string-to-number (car (cdr (cdr version-list))))))
-    (if (> current-major major)
-        t
-      (if (and (= current-major major) (> current-minor minor))
-          t
-        (and (= current-minor minor) (>= current-tiny tiny))))))
+(defun apprentice-utils-elixir-version-check-p (supply-version &optional version)
+  "Return t if VERSION is greater than of equal to SUPPLY-VERSION."
+  (version<= supply-version (or version (apprentice-utils-elixir-version))))
 
 (provide 'apprentice-utils)
 

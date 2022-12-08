@@ -126,7 +126,7 @@ run all tests)."
 (defun apprentice-mix-test-stale ()
   "Run stale tests (Elixir 1.3+ only)."
   (interactive)
-  (if (apprentice-utils-elixir-version-check-p 1 3 0)
+  (if (apprentice-utils-elixir-version-check-p "1.3.0")
       (apprentice-mix--execute-test "--stale")
     (progn (message "Elixir needs to be >= 1.3.0 for mix test --stale")
            (apprentice-mix-test))))

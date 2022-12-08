@@ -51,7 +51,7 @@
   (cd "test/dummy_elixir/test/")
   (apprentice-mix-test-stale)
   ;; CI runs multiple elixir versions so check correct version here
-  (if (apprentice-utils-elixir-version-check-p 1 3 0)
+  (if (apprentice-utils-elixir-version-check-p "1.3.0")
       (should (equal "--stale" apprentice-last-run-test))
     (should (equal "" apprentice-last-run-test)))
   (delay 2.1 (lambda ()

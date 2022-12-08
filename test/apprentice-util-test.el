@@ -118,11 +118,11 @@ foo
                           (apprentice-utils-elixir-version))))
 
 (ert-deftest test-utils/elixir-version-check-p ()
-  (should (apprentice-utils-elixir-version-check-p 1 3 0 "1.3.0"))
-  (should-not (apprentice-utils-elixir-version-check-p 1 3 1 "1.3.0"))
-  (should-not (apprentice-utils-elixir-version-check-p 1 3 0 "1.2.9"))
-  (should-not (apprentice-utils-elixir-version-check-p 2 0 0 "1.3.0"))
-  (should (apprentice-utils-elixir-version-check-p 1 3 0 "2.0.0")))
+  (should (apprentice-utils-elixir-version-check-p "1.3.0" "1.3.0"))
+  (should-not (apprentice-utils-elixir-version-check-p "1.3.1" "1.3.0"))
+  (should-not (apprentice-utils-elixir-version-check-p "1.3.0" "1.2.9"))
+  (should-not (apprentice-utils-elixir-version-check-p "2.0.0" "1.3.0"))
+  (should (apprentice-utils-elixir-version-check-p "1.3.0" "2.0.0")))
 
 (provide 'apprentice-utils-tests)
 
