@@ -143,9 +143,9 @@ Key bindings:
   (define-key map (kbd "e f") 'apprentice-execute-file)
   (define-key map (kbd "e b") 'apprentice-execute-this-buffer)
 
-  (define-key map (kbd "h h") 'apprentice-help)
-  (define-key map (kbd "h i") 'apprentice-help-history)
-  (define-key map (kbd "h e") 'apprentice-help-search-at-point)
+  ;; (define-key map (kbd "h h") 'apprentice-help)
+  ;; (define-key map (kbd "h i") 'apprentice-help-history)
+  ;; (define-key map (kbd "h e") 'apprentice-help-search-at-point)
   (define-key map (kbd "h r") 'apprentice-refcard)
 
   (define-key map (kbd "p s") 'apprentice-project-toggle-file-and-tests)
@@ -177,15 +177,15 @@ Key bindings:
   (define-key map (kbd "v r") 'apprentice-eval-print-quoted-buffer)
   (define-key map (kbd "v !") 'apprentice-eval-close-popup)
 
-  (define-key map (kbd "o l") 'apprentice-macroexpand-once-current-line)
-  (define-key map (kbd "o L") 'apprentice-macroexpand-once-print-current-line)
-  (define-key map (kbd "o k") 'apprentice-macroexpand-current-line)
-  (define-key map (kbd "o K") 'apprentice-macroexpand-print-current-line)
-  (define-key map (kbd "o i") 'apprentice-macroexpand-once-region)
-  (define-key map (kbd "o I") 'apprentice-macroexpand-once-print-region)
-  (define-key map (kbd "o r") 'apprentice-macroexpand-region)
-  (define-key map (kbd "o R") 'apprentice-macroexpand-print-region)
-  (define-key map (kbd "o !") 'apprentice-macroexpand-close-popup)
+  ;; (define-key map (kbd "o l") 'apprentice-macroexpand-once-current-line)
+  ;; (define-key map (kbd "o L") 'apprentice-macroexpand-once-print-current-line)
+  ;; (define-key map (kbd "o k") 'apprentice-macroexpand-current-line)
+  ;; (define-key map (kbd "o K") 'apprentice-macroexpand-print-current-line)
+  ;; (define-key map (kbd "o i") 'apprentice-macroexpand-once-region)
+  ;; (define-key map (kbd "o I") 'apprentice-macroexpand-once-print-region)
+  ;; (define-key map (kbd "o r") 'apprentice-macroexpand-region)
+  ;; (define-key map (kbd "o R") 'apprentice-macroexpand-print-region)
+  ;; (define-key map (kbd "o !") 'apprentice-macroexpand-close-popup)
 
   (define-key map (kbd "X i") 'apprentice-hex-info-at-point)
   (define-key map (kbd "X r") 'apprentice-hex-releases-at-point)
@@ -264,11 +264,11 @@ Key bindings:
      ["Project list all files inside lib directory" apprentice-project-find-lib]
      ["Project toggle between file and test" apprentice-project-toggle-file-and-tests]
      ["Project toggle between file and test in other window" apprentice-project-toggle-file-and-tests-other-window])
-    ("Documentation"
-     ["Documentation search..." apprentice-help]
-     ["Documentation search history..." apprentice-help-history]
-     "---"
-     ["Documentation search at point..." apprentice-help-search-at-point])
+    ;; ("Documentation"
+    ;;  ["Documentation search..." apprentice-help]
+    ;;  ["Documentation search history..." apprentice-help-history]
+    ;;  "---"
+    ;;  ["Documentation search at point..." apprentice-help-search-at-point])
     ("About"
      ["Show Apprentice version" apprentice-version t])))
 
