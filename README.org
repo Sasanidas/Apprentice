@@ -1,4 +1,4 @@
-#+html: <p align="left"><img width=200 src="images/apprentice.png" /></p>
+#+html: <p align="center"><img src="images/apprentice_banner.png" /></p>
 #+html: <blockquote> Elixir Tooling Integration Into Emacs </blockquote>
 [[https://img.shields.io/badge/license-GPL_3-green.svg]] 
 
