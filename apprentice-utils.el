@@ -31,7 +31,7 @@
 (require 'apprentice-execute)
 
 (defun apprentice-utils-build-command (command-list)
-  "Build the commands list for the runner."
+  "Build COMMAND-LIST for the runner."
   (let* ((command-list (flatten-list
 			(if (stringp command-list)
 			    (split-string command-list)
@@ -93,7 +93,7 @@ module names (MyModule)."
 (defun apprentice-utils-path-to-module-name (path)
   "Convert PATH to its Elixir module name equivalent.
 
-For example, convert 'my_app/my_module.ex' to 'MyApp.MyModule'."
+For example, convert my_app/my_module.ex to MyApp.MyModule ."
   (let* ((path (file-name-sans-extension path))
          (path (split-string path "/"))
          (path (cl-remove "" path :test #'string-equal)))
