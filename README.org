@@ -1,6 +1,7 @@
 #+html: <p align="center"><img src="images/apprentice_banner.png" /></p>
 #+html: <blockquote> Elixir Tooling Integration Into Emacs </blockquote>
 [[https://img.shields.io/badge/license-GPL_3-green.svg]] 
+[[https://github.com/Sasanidas/Apprentice/actions/workflows/main.yml/badge.svg]]
 
 Apprentice is a fork [[https://github.com/tonini/alchemist.el][alchemist.el]], similar in some aspects but quite different in others.
 
