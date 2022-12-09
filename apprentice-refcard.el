@@ -1,8 +1,10 @@
 ;;; apprentice-refcard.el --- Generates a refcard of apprentice functionality
 
 ;; Copyright © 2015 Samuel Tonini
+;; Copyright © 2022 Fermin MF
 
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com
+;; Maintainer: Fermin MF <fmfs@posteo.net>
 
 ;; This file is not part of GNU Emacs.
 

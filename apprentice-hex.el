@@ -1,8 +1,10 @@
 ;;; apprentice-hex.el --- Interface to the Hex package manager API. -*- lexical-binding: t -*-
 
 ;; Copyright © 2014-2016 Samuel Tonini
+;; Copyright © 2022 Fermin MF
 
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com
+;; Maintainer: Fermin MF <fmfs@posteo.net>
 
 ;; This file is not part of GNU Emacs.
 

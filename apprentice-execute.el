@@ -1,8 +1,10 @@
 ;;; apprentice-execute.el --- Elixir's script execution integration
 
 ;; Copyright © 2014-2017 Samuel Tonini
+;; Copyright © 2022 Fermin MF
 
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com
+;; Maintainer: Fermin MF <fmfs@posteo.net>
 
 ;; This file is not part of GNU Emacs.
 

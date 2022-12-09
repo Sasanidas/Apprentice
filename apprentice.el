@@ -4,7 +4,6 @@
 ;; Copyright © 2022 Fermin MF
 ;;
 ;; Author: Samuel Tonini <tonini.samuel@gmail.com>
-;; Author: Fermin MF <fmfs@posteo.net>
 ;; Maintainer: Fermin MF <fmfs@posteo.net>
 ;; URL: https://github.com/Sasanidas/Apprentice
 ;; Version: 0.5.0
