@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: erlef/setup-beam@v1.13.1
+        with:
+          elixir-version: "1.12.2"
+          otp-version: "25.1.2"
 
       - uses: purcell/setup-emacs@master
         with:
