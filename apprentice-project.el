@@ -30,19 +30,15 @@
 (require 'cl-lib)
 (require 'apprentice-file)
 
-(defcustom apprentice-project-elixir-source-dir ""
-  "Path to the elixir source code."
-  :type 'string
-  :group 'alchemist-goto)
-
-;; Tell the byte compiler about autoloaded functions from packages
-(eval-when-compile
-  (declare-function apprentice-goto-elixir-source-dir ""))
-
 (defgroup apprentice-project nil
   "API to identify Elixir mix projects."
   :prefix "apprentice-help-"
   :group 'apprentice)
+
+(defcustom apprentice-project-elixir-source-dir ""
+  "Path to the elixir source code."
+  :type 'string
+  :group 'alchemist-project)
 
 (defconst apprentice-project-mix-project-indicator "mix.exs"
   "File which indicates the root directory of an Elixir Mix project.")
@@ -108,14 +104,14 @@ directory from there instead."
     dir))
 
 (defun apprentice-project-toggle-file-and-tests-other-window ()
-  "Toggle between a file and its tests in other window."
+  "Toggle between a file and its test in other window."
   (interactive)
   (if (apprentice-utils-test-file-p)
       (apprentice-project-open-file-for-current-tests 'find-file-other-window)
     (apprentice-project-open-tests-for-current-file 'find-file-other-window)))
 
 (defun apprentice-project-toggle-file-and-tests ()
-  "Toggle between a file and its tests in the current window."
+  "Toggle between a file and its test in the current window."
   (interactive)
   (if (apprentice-utils-test-file-p)
       (apprentice-project-open-file-for-current-tests 'find-file)
@@ -217,7 +213,7 @@ The newly created buffer is filled with a module definition based on the file na
 (defun apprentice-project-name ()
   "Return the name of the current Elixir Mix project."
   (if (apprentice-project-p)
-      (car (cdr (reverse (split-string (apprentice-project-root) "/"))))
+      (car (last (split-string (apprentice-project-root) "/") 2))
     ""))
 
 (defun apprentice-project-find-dir (directory)
