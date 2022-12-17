@@ -1,4 +1,4 @@
-;;; test-helper.el --- Test helper for test suites
+;;; apprentice-test-helper.el --- Test helper for test suites
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;;
@@ -25,7 +25,6 @@
 ;;; Code:
 
 (require 'f)
-(require 'dash)
 
 (defvar apprentice-test-path
   (f-parent (f-this-file)))

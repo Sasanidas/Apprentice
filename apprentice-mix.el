@@ -27,6 +27,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 (require 'apprentice-utils)
 (require 'apprentice-project)
 (require 'apprentice-test-mode)
@@ -45,6 +46,11 @@
 (defcustom apprentice-mix-command "mix"
   "The shell command for mix."
   :type 'string
+  :group 'apprentice-mix)
+
+(defcustom apprentice-mix-start-in-umbrella t
+  "Start mix command in the umbrella app root or use a subproject."
+  :type 'boolean
   :group 'apprentice-mix)
 
 (defcustom apprentice-mix-test-task "test"
@@ -194,6 +200,28 @@ When no mix task had been run before calling this function, do nothing."
 			     apprentice-mix-buffer-name 'apprentice-mix-mode)
     (message "No mix task have been run yet")))
 
+(defun apprentice-mix--find-closest-mix-file-dir (path)
+  (let ((root (locate-dominating-file path "mix.exs")))
+    (when root
+      (file-truename root))))
+
+
+(defun apprentice-mix--umbrella-apps ()
+  (let ((closest-path (locate-dominating-file default-directory "apps")))
+    (when closest-path
+      (seq-filter
+       (lambda (name-path-pair)
+	 (let ((path (cdr name-path-pair)))
+	   path))
+       (cl-loop with potential-umbrella-apps-path = (concat closest-path "/apps")
+		with potential-umbrella-apps = (cl-remove-if (lambda (x) (or (string= x "..")
+									     (string= x ".")))
+							     (directory-files potential-umbrella-apps-path))
+		for dir-name in potential-umbrella-apps
+		collect (cons dir-name
+			      (apprentice-mix--find-closest-mix-file-dir
+			       (concat potential-umbrella-apps-path "/" dir-name))))))))
+
 ;; (defun apprentice-mix-filter (_process output)
 ;;   (with-local-quit
 ;;     (setq apprentice-mix-filter-output (cons output apprentice-mix-filter-output))
@@ -205,14 +233,19 @@ When no mix task had been run before calling this function, do nothing."
 ;;         (setq apprentice-mix-filter-output nil)
 ;;         (apprentice-mix-execute (list command) current-prefix-arg)))))
 
+(defun apprentice-mix--filter ()
+  "Remove control characters from output."
+  (let ((buffer-read-only nil))
+    (ansi-color-apply-on-region (point-min) (point-max))))
+
 ;;TODO: Use `define-compilation-mode'
-(define-derived-mode apprentice-mix-mode fundamental-mode "Mix Mode"
+(define-derived-mode apprentice-mix-mode compilation-mode "Mix"
   "Major mode for presenting Mix tasks.
 
 \\{apprentice-mix-mode-map}"
   (setq buffer-read-only t)
-  (setq-local truncate-lines t
-	      electric-indent-chars nil))
+  (setq-local truncate-lines t )
+  (add-hook 'compilation-filter-hook #'apprentice-mix--filter))
 
 (defun apprentice-mix-execute (command-list &optional prefix)
   "Run a mix task specified by COMMAND-LIST.

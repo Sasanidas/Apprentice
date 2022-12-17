@@ -32,15 +32,6 @@
    (f-mkdir "path" "to" "lib")
    (should (equal (apprentice-project-root) apprentice-sandbox-path))))
 
-(ert-deftest test-project-root/except-files-exists ()
-  "Should use `default-directory' when no argument."
-  (setq apprentice-project-root-path-cache nil)
-  (with-sandbox
-   (f-touch "mix.exs")
-   (f-touch ".hex")
-   (f-mkdir "path" "to" "lib")
-   (should-not (apprentice-project-root))))
-
 (ert-deftest test-project-root/directory-as-argument  ()
   "Should find root directory when directory as argument."
   (setq apprentice-project-root-path-cache nil)

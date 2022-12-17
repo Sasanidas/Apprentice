@@ -43,6 +43,7 @@
 (defconst apprentice-project-mix-project-indicator "mix.exs"
   "File which indicates the root directory of an Elixir Mix project.")
 
+;;TODO: Make something with this indicator
 (defconst apprentice-project-hex-pkg-indicator ".hex"
   "File which indicates the root directory of an Elixir Hex package.")
 
@@ -71,7 +72,21 @@
   "Return non-nil if DIR is the top level directory."
   (equal dir (file-name-directory (directory-file-name dir))))
 
-(defun apprentice-project-root (&optional dir)
+(defun apprentice-project--find-closest-identity-file (path identity)
+  "Find the closest IDENTITY file to the current buffer PATH."
+  (let ((root (locate-dominating-file path identity)))
+    (when root
+      (file-truename root))))
+
+(defun apprentice-project--mix-find-umbrella-root (dir)
+  (let* ((potential-umbrella-root-parts (butlast (split-string dir "/apps/")))
+	 (potential-umbrella-root (mapconcat #'identity potential-umbrella-root-parts ""))
+	 (umbrella-app-root (apprentice-project--find-closest-identity-file
+			     potential-umbrella-root
+			     apprentice-project-mix-project-indicator)))
+    (or umbrella-app-root (apprentice-project--find-closest-identity-file dir apprentice-project-mix-project-indicator))))
+
+(cl-defun apprentice-project-root (&optional (dir (or default-directory buffer-file-name)))
   "Return root directory of the current Elixir Mix project.
 
 It starts walking the directory tree to find the Elixir Mix root directory
@@ -81,19 +96,16 @@ directory from there instead."
 	   (string-prefix-p apprentice-project-root-path-cache
 			    (expand-file-name default-directory)))
       apprentice-project-root-path-cache
-    (let* ((dir (file-name-as-directory (or dir (expand-file-name default-directory))))
-	   (present-files (directory-files dir)))
-      (cond ((apprentice-project-top-level-dir-p dir)
-	     nil)
-	    ((cl-member apprentice-project-hex-pkg-indicator present-files
-			:test #'string-equal)
-	     (apprentice-project-root (file-name-directory (directory-file-name dir))))
-	    ((cl-member apprentice-project-mix-project-indicator present-files
-			:test #'string-equal)
-	     (setq apprentice-project-root-path-cache dir)
-	     dir)
-	    (t
-	     (apprentice-project-root (file-name-directory (directory-file-name dir))))))))
+    (if (apprentice-project-top-level-dir-p dir)
+	nil
+      (if-let ((umbrella
+		(and apprentice-mix-start-in-umbrella
+		     (string-match-p (regexp-quote "apps") dir))))
+	  (setf apprentice-project-root-path-cache (apprentice-project--mix-find-umbrella-root dir))
+
+	(if-let ((root (or (apprentice-project--find-closest-identity-file dir apprentice-project-mix-project-indicator))))
+	    (setf apprentice-project-root-path-cache root)
+	  nil)))))
 
 (defun apprentice-project-root-or-default-dir ()
   "Return the current Elixir mix project root or `default-directory'."

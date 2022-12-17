@@ -26,7 +26,10 @@
 
 (defun prepare-test-report-buffer ()
   (when (process-live-p (get-buffer-process (get-buffer apprentice-test-report-buffer-name)))
-    (set-process-query-on-exit-flag (get-buffer-process (get-buffer apprentice-test-report-buffer-name)) nil)))
+    (set-process-query-on-exit-flag
+     (get-buffer-process
+      (get-buffer apprentice-test-report-buffer-name))
+     nil)))
 
 (ert-deftest test-mix/run-mix-test ()
   (prepare-test-report-buffer)
@@ -57,6 +60,19 @@
   (delay 2.1 (lambda ()
                (should (apprentice-report--last-run-successful-p))))
   (wait 2.1))
+
+(ert-deftest test/mix-umbrella-apps ()
+  (cd "test/dummy_umbrella")
+  (should
+   (equal '("kv_server" "new_app" "other_app")
+	  (mapcar #'car (apprentice-mix--umbrella-apps)))))
+
+(ert-deftest test/mix-umbrella-root ()
+  (let ((root (expand-file-name "test/dummy_umbrella")))
+    (cd "test/dummy_umbrella/apps/kv_server")
+    (should
+     (string= (format "%s/" root)
+	      (apprentice-project-root)))))
 
 (provide 'apprentice-mix-test)
 
