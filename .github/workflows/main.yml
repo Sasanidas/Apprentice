@@ -20,4 +20,4 @@ jobs:
         with:
           version: 28.2
       - name: "Run tests"  
-        run: ls -la && make test
+        run: make test
