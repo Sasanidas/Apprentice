@@ -78,10 +78,15 @@
 (define-compilation-mode apprentice-compile-mode "Elixir Compile Mode"
   "Major mode for compiling Elixir files.
 \\{apprentice-compile-mode-map}"
-  (ansi-color-apply-on-region (point-min) (point-max))
   (setq buffer-read-only t)
   (setq-local truncate-lines t
-	      electric-indent-chars nil))
+	      electric-indent-chars nil)
+  (add-hook 'compilation-filter-hook #'apprentice-compile--output-filter))
+
+(defun apprentice-compile--output-filter ()
+  "Remove control characters from output."
+  (let ((buffer-read-only nil))
+    (ansi-color-apply-on-region (point-min) (point-max))))
 
 (defun apprentice-compile (cmdlist)
   "Compile CMDLIST with elixirc."

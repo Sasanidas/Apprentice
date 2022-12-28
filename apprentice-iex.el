@@ -73,6 +73,10 @@ iex(1)>
 (defvar apprentice-iex-vterm-mode-hook nil
   "Hook for customizing `apprentice-iex-vterm-mode'.")
 
+(defvar apprentice-iex-vterm-input-ring nil
+  "Apprentice custom input-ring.")
+
+;;TODO: Adapt this keymap to vterm version
 (defvar apprentice-iex-mode-map
   (let ((map (nconc (make-sparse-keymap) comint-mode-map)))
     ;; (define-key map "\t" 'company-complete)
@@ -95,12 +99,32 @@ It uses `comint-mode' for REPL interaction.
   (set (make-local-variable 'comint-input-sender) 'apprentice-iex--send-command)
   (add-hook 'comint-output-filter-functions 'apprentice-iex-spot-prompt nil t))
 
+(cl-defun apprentice-iex-vterm-insert-input ()
+  "Advice to `vterm-send-return'.
+It inserts `apprentice-iex--vterm-cstring' into
+`apprentice-iex-vterm-input-ring'."
+
+  (when (equal major-mode 'apprentice-iex-vterm-mode)
+    (with-current-buffer (current-buffer)
+      (save-excursion
+	(beginning-of-line)
+	(when (re-search-forward apprentice-iex-prompt-regexp nil t)
+	  (let ((be (point))
+		(en (progn (end-of-line) (point))))
+	    (ring-insert apprentice-iex-vterm-input-ring
+			 (string-trim
+			  (buffer-substring-no-properties be en)))))))))
+
 (define-derived-mode apprentice-iex-vterm-mode vterm-mode "Apprentice-IEx"
   "Major mode for interacting with an Elixir IEx process.
 It uses `vterm-mode' for REPL interaction.
 
 \\<apprentice-iex-mode-map>"
-  nil "Apprentice-IEx")
+  nil "Apprentice-IEx"
+  (set (make-local-variable 'apprentice-iex-vterm-input-ring) (make-ring 500))
+  (set (make-local-variable 'apprentice-iex--vterm-cstring) nil)
+
+  (advice-add 'vterm-send-return :before 'apprentice-iex-vterm-insert-input))
 
 (defun apprentice-iex-command (arg)
   (split-string-and-unquote
@@ -112,7 +136,7 @@ It uses `vterm-mode' for REPL interaction.
         (apply 'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
   (with-current-buffer apprentice-iex-buffer
     (apprentice-iex-comint-mode)
-    (run-hooks 'apprentice-iex-mode-hook)))
+    (run-hooks 'apprentice-iex-comint-mode-hook)))
 
 (cl-defmethod apprentice-iex--start-process (command (type (eql :vterm-mode)))
   (setq apprentice-iex-buffer
@@ -121,9 +145,9 @@ It uses `vterm-mode' for REPL interaction.
 	    (apprentice-iex-vterm-mode))
 	  (pop-to-buffer buffer)))
   (with-current-buffer apprentice-iex-buffer
-    (vterm-send-string (mapconcat 'identity command " "))
+    (vterm-send-string (mapconcat 'identity (append command '("&&" "exit")) " "))
     (vterm-send-return)
-    (run-hooks 'apprentice-iex-mode-hook)))
+    (run-hooks 'apprentice-iex-vterm-mode-hook)))
 
 (defun apprentice-iex-start-process (command)
   "Start an IEX process.
