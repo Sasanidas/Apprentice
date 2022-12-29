@@ -258,13 +258,13 @@ macro) while the values are the position at which the test matched."
 
 (defun apprentice-test-execute (command-list)
   (message "Testing...")
-  (let* ((command (mapconcat 'concat (-flatten command-list) " ")))
+  (let* ((command (mapconcat 'concat (flatten-list command-list) " ")))
     (apprentice-test-save-buffers)
     (apprentice-report-run command
-                          apprentice-test-report-process-name
-                          apprentice-test-report-buffer-name
-                          'apprentice-test-report-mode
-                          #'apprentice-test--handle-exit)))
+			   apprentice-test-report-process-name
+			   apprentice-test-report-buffer-name
+			   'apprentice-test-report-mode
+			   #'apprentice-test--handle-exit)))
 
 (defun apprentice-test-initialize-modeline ()
   "Initialize the mode-line face."
