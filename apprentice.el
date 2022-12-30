@@ -7,7 +7,7 @@
 ;; Maintainer: Fermin MF <fmfs@posteo.net>
 ;; URL: https://github.com/Sasanidas/Apprentice
 ;; Version: 0.5.0
-;; Package-Requires: ((elixir-mode "2.2.5") (emacs "24.4") (company "0.8.0"))
+;; Package-Requires: ((elixir-mode "2.2.5") (emacs "26.2"))
 ;; Keywords: languages, elixir, elixirc, mix, hex, apprentice
 
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,6 @@
 ;;    * Mix integration
 ;;    * Compile & Execution of Elixir code
 ;;    * Inline code evaluation
-;;    * Inline macro expanding
 ;;    * Documentation lookup
 ;;    * Definition lookup
 ;;    * Powerful IEx integration
@@ -56,12 +55,22 @@
   :link '(url-link :tag "Github" "https://github.com/Sasanidas/Apprentice")
   :link '(emacs-commentary-link :tag "Commentary" "apprentice"))
 
+(defgroup apprentice-key nil
+  "Key prefix setup for Apprentice related key commands."
+  :prefix "apprentice-key-"
+  :group 'apprentice)
+
+(defcustom apprentice-key-command-prefix (kbd "C-c a")
+  "The prefix for Apprentice related key commands."
+  :type 'string
+  :group 'apprentice)
+
+
 (defvar apprentice-mode-keymap nil)
 
 (require 'easymenu)
 (require 'elixir-mode)
 (require 'apprentice-utils)
-(require 'apprentice-key)
 (require 'apprentice-eval)
 (require 'apprentice-report)
 (require 'apprentice-mix)

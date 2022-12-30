@@ -30,7 +30,6 @@
 (require 'comint)
 (require 'cl-lib)
 (require 'pcase)
-(require 'apprentice-key)
 (require 'apprentice-scope)
 (require 'apprentice-project)
 

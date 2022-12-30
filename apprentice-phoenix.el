@@ -27,7 +27,6 @@
 
 ;;; Code:
 
-(require 'apprentice-key)
 (require 'apprentice-project)
 
 (defgroup apprentice-phoenix nil

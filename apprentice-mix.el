@@ -132,7 +132,7 @@ run all tests)."
   (apprentice-mix--execute-test))
 
 (defun apprentice-mix-test-stale ()
-  "Run stale tests (Elixir 1.3+ only)."
+  "Run stale test (Elixir 1.3+ only)."
   (interactive)
   (if (apprentice-utils-elixir-version-check-p "1.3.0")
       (apprentice-mix--execute-test "--stale")
