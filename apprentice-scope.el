@@ -28,6 +28,7 @@
 ;;; Code:
 
 (require 'apprentice-utils)
+(require 'which-func)
 
 (defgroup apprentice-scope nil
   "Provides information about the Elixir source code context."
@@ -186,6 +187,15 @@ Example:
     (when (and function
                (string-match-p "^[a-z_\?!]+" function))
       function)))
+
+(defun apprentice-scope-current-function ()
+  (let* ((fun (which-function))
+	 (fun-list (split-string fun " ")))
+    ;; This is to support both elixir-mode and elixir-ts-mode
+    (if (> (length fun-list) 1)
+	(setq fun (car
+		   (split-string (nth 1 fun-list) "(")))
+      (setq fun (car fun-list)))))
 
 (defun apprentice-scope-alias-full-path (module)
   "Solve the full path for the MODULE alias."
