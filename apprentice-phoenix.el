@@ -34,44 +34,57 @@
   :prefix "apprentice-phoenix-"
   :group 'apprentice)
 
+(defun apprentice-phoenix-web-directory ()
+  (concat
+   (file-name-as-directory "lib")
+   (apprentice-project-name) "_web"))
+
 ;;;###autoload
 (defun apprentice-phoenix-project-p ()
   "Return non-nil if `default-directory' is inside a Phoenix project."
   (and (apprentice-project-p)
-       (file-directory-p (concat (apprentice-project-root) "web"))))
+       (file-directory-p (concat (apprentice-project-root)
+				 (apprentice-phoenix-web-directory)))))
+
 
 (defun apprentice-phoenix-find-dir (directory)
   (unless (apprentice-phoenix-project-p)
-    (error "Could not find a Phoenix Mix project root."))
+    (error "Could not find a Phoenix Mix project root"))
   (apprentice-file-find-files (apprentice-project-root) directory))
 
 (defun apprentice-phoenix-find-web ()
   (interactive)
-  (apprentice-phoenix-find-dir "web"))
+  (apprentice-phoenix-find-dir (file-name-as-directory (apprentice-phoenix-web-directory))))
 
 (defun apprentice-phoenix-find-views ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/views"))
+  (apprentice-phoenix-find-dir
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "views")))
 
 (defun apprentice-phoenix-find-controllers ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/controllers"))
+  (apprentice-phoenix-find-dir 
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "controllers")))
 
 (defun apprentice-phoenix-find-channels ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/channels"))
+  (apprentice-phoenix-find-dir
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "channels")))
 
 (defun apprentice-phoenix-find-templates ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/templates"))
+  (apprentice-phoenix-find-dir
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "templates")))
 
 (defun apprentice-phoenix-find-models ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/models"))
+  (apprentice-phoenix-find-dir
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "models")))
 
 (defun apprentice-phoenix-find-static ()
   (interactive)
-  (apprentice-phoenix-find-dir "web/static"))
+  (apprentice-phoenix-find-dir
+   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "static")))
 
 (defun apprentice-phoenix-routes (&optional prefix)
   (interactive)
@@ -79,25 +92,27 @@
   (apprentice-mix-execute '("phoenix.routes") prefix))
 
 (defun apprentice-phoenix-router ()
-  "Open the 'router.ex' file from 'web' directory."
+  "Open the 'router.ex' file from 'PROJECTNAME_web' directory."
   (interactive)
   (unless (apprentice-phoenix-project-p)
-    (error "Could not find an Phoenix Mix project root."))
-  (find-file (concat (apprentice-project-root) "web/router.ex")))
+    (error "Could not find an Phoenix Mix project root"))
+  (find-file (concat
+	      (apprentice-project-root)
+	      (file-name-as-directory (apprentice-phoenix-web-directory)) "router.ex")))
 
-(defvar apprentice-phoenix-command-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
-    (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
-    (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
-    (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
-    (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
-    (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
-    (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
-    (define-key map (kbd "n r") #'apprentice-phoenix-router)
-    (define-key map (kbd "n R") #'apprentice-phoenix-routes)
-    map)
-  "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
+  (defvar apprentice-phoenix-command-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
+      (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
+      (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
+      (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
+      (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
+      (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
+      (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
+      (define-key map (kbd "n r") #'apprentice-phoenix-router)
+      (define-key map (kbd "n R") #'apprentice-phoenix-routes)
+      map)
+    "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
 (fset 'apprentice-phoenix-command-map apprentice-phoenix-command-map)
 
 (defvar apprentice-phoenix-mode-map
