@@ -43,10 +43,15 @@
      (f-mkdir apprentice-sandbox-path)
      ,@body))
 
+(defmacro with-sandbox-phoenix (&rest body)
+  `(let ((default-directory (file-name-as-directory
+			     (f-expand "dummy_phoenix" apprentice-test-path))))
+     ,@body))
+
 (defmacro with-current-variable (name value &rest body)
   "Evaluate BODY after temporarily set variable NAME with VALUE."
-`(let ((,name ,value))
-   ,@body))
+  `(let ((,name ,value))
+     ,@body))
 
 (defmacro capture-message (&rest form)
   (declare (debug (&rest form))

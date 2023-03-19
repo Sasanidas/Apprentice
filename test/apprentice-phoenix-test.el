@@ -25,9 +25,7 @@
 (require 'apprentice-test-helper)
 
 (ert-deftest apprentice-phoenix-test/a-phoenix-project ()
-  (with-sandbox
-   (f-touch "mix.exs")
-   (f-mkdir "web")
+  (with-sandbox-phoenix
    (should (apprentice-phoenix-project-p))))
 
 (ert-deftest apprentice-phoenix-test/no-phoenix-project ()
