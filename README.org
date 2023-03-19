@@ -7,7 +7,7 @@ Apprentice is a fork [[https://github.com/tonini/alchemist.el][alchemist.el]], s
 
 Like alchemist, Apprentice comes with a bunch of *features*, which are:
 
-+ Mix integration
++ Mix integration (contributed by [[https://github.com/ayrat555][Ayrat Badykov]])
 + Compile & Execution of Elixir code
 + Inline code evaluation
 + Powerful IEx integration
