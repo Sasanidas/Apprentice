@@ -128,12 +128,12 @@
   "Menu for Apprentice-Phoenix mode."
   '("Phoenix"
     ("Directory lookup"
-     ["Lookup 'web' " apprentice-phoenix-find-web]
-     ["Lookup 'web/views' " apprentice-phoenix-find-views]
-     ["Lookup 'web/controllers' " apprentice-phoenix-find-controllers]
-     ["Lookup 'web/channels' " apprentice-phoenix-find-channels]
-     ["Lookup 'web/templates' " apprentice-phoenix-find-templates]
-     ["Lookup 'web/models' " apprentice-phoenix-find-models]
+     ["Lookup 'app_web' " apprentice-phoenix-find-web]
+     ["Lookup 'app_web/views' " apprentice-phoenix-find-views]
+     ["Lookup 'app_web/controllers' " apprentice-phoenix-find-controllers]
+     ["Lookup 'app_web/channels' " apprentice-phoenix-find-channels]
+     ["Lookup 'app_web/templates' " apprentice-phoenix-find-templates]
+     ["Lookup 'app' " apprentice-phoenix-find-models]
      ["Lookup 'priv/static'" apprentice-phoenix-find-static])
     ("Mix tasks"
      ["Run 'phx.routes'" apprentice-phoenix-routes])
