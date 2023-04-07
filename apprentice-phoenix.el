@@ -39,6 +39,11 @@
    (file-name-as-directory "lib")
    (apprentice-project-name) "_web"))
 
+(defun apprentice-phoenix-app-directory ()
+  (concat
+   (file-name-as-directory "lib")
+   (apprentice-project-name)))
+
 ;;;###autoload
 (defun apprentice-phoenix-project-p ()
   "Return non-nil if `default-directory' is inside a Phoenix project."
@@ -78,18 +83,16 @@
 
 (defun apprentice-phoenix-find-models ()
   (interactive)
-  (apprentice-phoenix-find-dir
-   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "models")))
+  (apprentice-phoenix-find-dir (apprentice-phoenix-app-directory)))
 
 (defun apprentice-phoenix-find-static ()
   (interactive)
-  (apprentice-phoenix-find-dir
-   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "static")))
+  (apprentice-phoenix-find-dir "priv/static"))
 
 (defun apprentice-phoenix-routes (&optional prefix)
   (interactive)
   "Run the Mix task 'phoenix.routes' and list all available Phoenix routes."
-  (apprentice-mix-execute '("phoenix.routes") prefix))
+  (apprentice-mix-execute '("phx.routes") prefix))
 
 (defun apprentice-phoenix-router ()
   "Open the 'router.ex' file from 'PROJECTNAME_web' directory."
@@ -131,9 +134,9 @@
      ["Lookup 'web/channels' " apprentice-phoenix-find-channels]
      ["Lookup 'web/templates' " apprentice-phoenix-find-templates]
      ["Lookup 'web/models' " apprentice-phoenix-find-models]
-     ["Lookup 'web/static'" apprentice-phoenix-find-static])
+     ["Lookup 'priv/static'" apprentice-phoenix-find-static])
     ("Mix tasks"
-     ["Run 'phoenix.routes'" apprentice-phoenix-routes])
+     ["Run 'phx.routes'" apprentice-phoenix-routes])
     ["Open the 'router.ex' file" apprentice-phoenix-router]))
 
 ;;;###autoload
