@@ -100,19 +100,19 @@
 	      (apprentice-project-root)
 	      (file-name-as-directory (apprentice-phoenix-web-directory)) "router.ex")))
 
-  (defvar apprentice-phoenix-command-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
-      (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
-      (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
-      (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
-      (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
-      (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
-      (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
-      (define-key map (kbd "n r") #'apprentice-phoenix-router)
-      (define-key map (kbd "n R") #'apprentice-phoenix-routes)
-      map)
-    "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
+(defvar apprentice-phoenix-command-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
+    (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
+    (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
+    (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
+    (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
+    (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
+    (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
+    (define-key map (kbd "n r") #'apprentice-phoenix-router)
+    (define-key map (kbd "n R") #'apprentice-phoenix-routes)
+    map)
+  "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
 (fset 'apprentice-phoenix-command-map apprentice-phoenix-command-map)
 
 (defvar apprentice-phoenix-mode-map
