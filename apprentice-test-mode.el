@@ -258,7 +258,7 @@ macro) while the values are the position at which the test matched."
 
 (defun apprentice-test-execute (command-list)
   (message "Testing...")
-  (let* ((command (mapconcat 'concat (flatten-list command-list) " ")))
+  (let* ((command (mapconcat #'concat (flatten-list command-list) " ")))
     (apprentice-test-save-buffers)
     (apprentice-report-run command
 			   apprentice-test-report-process-name

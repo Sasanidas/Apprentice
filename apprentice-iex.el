@@ -95,8 +95,8 @@ It uses `comint-mode' for REPL interaction.
   (set (make-local-variable 'comint-prompt-regexp) apprentice-iex-prompt-regexp)
   (set (make-local-variable 'comint-prompt-read-only) apprentice-iex-prompt-read-only)
   (set (make-local-variable 'comint-input-autoexpand) nil)
-  (set (make-local-variable 'comint-input-sender) 'apprentice-iex--send-command)
-  (add-hook 'comint-output-filter-functions 'apprentice-iex-spot-prompt nil t))
+  (set (make-local-variable 'comint-input-sender) #'apprentice-iex--send-command)
+  (add-hook 'comint-output-filter-functions #'apprentice-iex-spot-prompt nil t))
 
 (cl-defun apprentice-iex-vterm-insert-input ()
   "Advice to `vterm-send-return'.
@@ -123,7 +123,7 @@ It uses `vterm-mode' for REPL interaction.
   (set (make-local-variable 'apprentice-iex-vterm-input-ring) (make-ring 500))
   (set (make-local-variable 'apprentice-iex--vterm-cstring) nil)
 
-  (advice-add 'vterm-send-return :before 'apprentice-iex-vterm-insert-input))
+  (advice-add 'vterm-send-return :before #'apprentice-iex-vterm-insert-input))
 
 (defun apprentice-iex-command (arg)
   (split-string-and-unquote
@@ -132,7 +132,7 @@ It uses `vterm-mode' for REPL interaction.
 
 (cl-defmethod apprentice-iex--start-process (command (type (eql :comint-mode)))
   (setq apprentice-iex-buffer
-        (apply 'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
+        (apply #'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
   (with-current-buffer apprentice-iex-buffer
     (apprentice-iex-comint-mode)
     (run-hooks 'apprentice-iex-comint-mode-hook)))
@@ -144,7 +144,7 @@ It uses `vterm-mode' for REPL interaction.
 	    (apprentice-iex-vterm-mode))
 	  (pop-to-buffer buffer)))
   (with-current-buffer apprentice-iex-buffer
-    (vterm-send-string (mapconcat 'identity (append command '("&&" "exit")) " "))
+    (vterm-send-string (mapconcat #'identity (append command '("&&" "exit")) " "))
     (vterm-send-return)
     (run-hooks 'apprentice-iex-vterm-mode-hook)))
 
@@ -162,7 +162,7 @@ setting up the IEx buffer."
           (get-buffer-process apprentice-iex-buffer))
       (progn
         (let ((current-prefix-arg arg))
-          (call-interactively 'apprentice-iex-start-process))
+          (call-interactively #'apprentice-iex-start-process))
         (apprentice-iex-process arg))))
 
 (defun apprentice-iex--remove-newlines (string)
@@ -183,14 +183,14 @@ setting up the IEx buffer."
   "Sends the current line to the inferior IEx process.
 It also jump to the buffer."
   (interactive)
-  (call-interactively 'apprentice-iex-send-current-line)
+  (call-interactively #'apprentice-iex-send-current-line)
   (pop-to-buffer (process-buffer (apprentice-iex-process))))
 
 (defun apprentice-iex-send-region-and-go ()
   "Sends the marked region to the inferior IEx process.
 It also jump to the buffer."
   (interactive)
-  (call-interactively 'apprentice-iex-send-region)
+  (call-interactively #'apprentice-iex-send-region)
   (pop-to-buffer (process-buffer (apprentice-iex-process))))
 
 (defun apprentice-iex-send-region (beg end)
@@ -235,7 +235,7 @@ It also jump to the buffer."
 (cl-defmethod apprentice-iex--command (proc (lines list) (type (eql :vterm-mode)))
   (with-current-buffer (process-buffer proc)
     (vterm-send-string
-     (mapconcat 'identity lines " "))
+     (mapconcat #'identity lines " "))
     (vterm-send-return)))
 
 (defun apprentice-iex--send-command (proc str)
@@ -272,8 +272,8 @@ It also jump to the buffer."
       (other-window 1)))
 
 ;;;###autoload
-(defalias 'run-elixir 'apprentice-iex-run)
-(defalias 'inferior-elixir 'apprentice-iex-run)
+(defalias 'run-elixir #'apprentice-iex-run)
+(defalias 'inferior-elixir #'apprentice-iex-run)
 
 ;;;###autoload
 (defun apprentice-iex-run (&optional arg)
