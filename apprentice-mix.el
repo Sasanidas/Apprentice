@@ -185,7 +185,7 @@ Prompt for the mix env if PREFIX arg is set."
         (with-current-buffer buffer
           (let ((inhibit-read-only t))
             (goto-char (point-max))
-            (insert (concat input "\n\n"))
+            (insert input "\n\n")
             (set-marker (process-mark process) (point)))
           (comint-send-string process (concat input "\n")))
       (error "No %s process is running" apprentice-mix-buffer-name))))

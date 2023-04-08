@@ -1,4 +1,4 @@
-;;; apprentice.el --- Elixir tooling integration into Emacs
+;;; apprentice.el --- Elixir tooling integration
 
 ;; Copyright © 2014-2017 Samuel Tonini
 ;; Copyright © 2022 Fermin MF
@@ -118,9 +118,7 @@ just return nil."
 
 Key bindings:
 \\{apprentice-mode-map}"
-  nil
-  ;; The indicator for the mode line.
-  " apprentice"
+  :lighter " apprentice"
   :group 'apprentice
   :global nil
   :keymap `((,apprentice-key-command-prefix . apprentice-mode-keymap))

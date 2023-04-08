@@ -308,9 +308,9 @@ jump to the first error in the test report.
 Do nothing if there are no error in this test report."
   (interactive)
   (apprentice-utils-jump-to-previous-matching-line apprentice-test--failing-files-regex
-                                                   #'(lambda ()
-                                                       (forward-line 1)
-                                                       (back-to-indentation))))
+                                                   (lambda ()
+                                                     (forward-line 1)
+                                                     (back-to-indentation))))
 
 (defun apprentice-test-next-stacktrace-file ()
   "Jump to the next stacktrace file in the test report.

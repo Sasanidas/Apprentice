@@ -109,7 +109,7 @@ It inserts `apprentice-iex--vterm-cstring' into
 	(beginning-of-line)
 	(when (re-search-forward apprentice-iex-prompt-regexp nil t)
 	  (let ((be (point))
-		(en (progn (end-of-line) (point))))
+		(en (line-end-position)))
 	    (ring-insert apprentice-iex-vterm-input-ring
 			 (string-trim
 			  (buffer-substring-no-properties be en)))))))))
