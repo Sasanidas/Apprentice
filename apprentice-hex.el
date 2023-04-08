@@ -32,6 +32,8 @@
 (require 'apprentice-project)
 (require 'apprentice-interact)
 
+(declare-function string-split "subr")
+
 (defgroup apprentice-hex nil
   "Interface to the Hex package manager API."
   :prefix "apprentice-test-mode-"

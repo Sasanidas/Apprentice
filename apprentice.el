@@ -83,6 +83,8 @@
 (require 'apprentice-macroexpand)
 (require 'apprentice-phoenix)
 
+(declare-function apprentice-refcard "apprentice-refcard")
+
 (defun apprentice-mode-hook ()
   "Hook which enables `apprentice-mode'."
   (apprentice-mode 1))

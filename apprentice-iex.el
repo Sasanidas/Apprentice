@@ -33,6 +33,11 @@
 (require 'apprentice-scope)
 (require 'apprentice-project)
 
+(declare-function vterm-clear "ext:vterm")
+(declare-function vterm-send-return "ext:vterm")
+(declare-function vterm-send-string "ext:vterm")
+(declare-function vterm-mode "ext:vterm")
+
 (defgroup apprentice-iex nil
   "Interaction with an Elixir IEx process."
   :prefix "apprentice-iex-"
