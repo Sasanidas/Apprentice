@@ -120,11 +120,9 @@
     map)
   "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
 
-(fset 'apprentice-phoenix-command-map apprentice-phoenix-command-map)
-
 (defvar apprentice-phoenix-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map apprentice-key-command-prefix 'apprentice-phoenix-command-map)
+    (define-key map apprentice-key-command-prefix apprentice-phoenix-command-map)
     map)
   "Keymap for Apprentice Phoenix minor mode.")
 

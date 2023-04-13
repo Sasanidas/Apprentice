@@ -66,8 +66,6 @@
   :group 'apprentice)
 
 
-(defvar apprentice-mode-keymap nil)
-
 (require 'easymenu)
 (require 'elixir-mode)
 (require 'apprentice-utils)
@@ -112,7 +110,89 @@ just return nil."
   (interactive)
   (message "Elixir %s" (apprentice-utils-elixir-version)))
 
-(define-prefix-command 'apprentice-mode-keymap)
+(defvar apprentice-mode-keymap
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "x") #'apprentice-mix)
+    (define-key map (kbd "t") #'apprentice-mix-test)
+    (define-key map (kbd "r") #'apprentice-mix-rerun-last-test)
+
+    (define-key map (kbd "m c") #'apprentice-mix-compile)
+    (define-key map (kbd "m r") #'apprentice-mix-run)
+    (define-key map (kbd "m l") #'apprentice-mix-rerun-last-task)
+    (define-key map (kbd "m t f") #'apprentice-mix-test-file)
+    (define-key map (kbd "m t b") #'apprentice-mix-test-this-buffer)
+    (define-key map (kbd "m t .") #'apprentice-mix-test-at-point)
+    (define-key map (kbd "m t s") #'apprentice-mix-test-stale)
+    (define-key map (kbd "m t r") #'apprentice-mix-rerun-last-test)
+
+    (define-key map (kbd "c c") #'apprentice-compile)
+    (define-key map (kbd "c f") #'apprentice-compile-file)
+    (define-key map (kbd "c b") #'apprentice-compile-this-buffer)
+
+    (define-key map (kbd "e e") #'apprentice-execute)
+    (define-key map (kbd "e f") #'apprentice-execute-file)
+    (define-key map (kbd "e b") #'apprentice-execute-this-buffer)
+
+    ;; (define-key map (kbd "h h") #'apprentice-help)
+    ;; (define-key map (kbd "h i") #'apprentice-help-history)
+    ;; (define-key map (kbd "h e") #'apprentice-help-search-at-point)
+    (define-key map (kbd "h r") #'apprentice-refcard)
+
+    (define-key map (kbd "p s") #'apprentice-project-toggle-file-and-tests)
+    (define-key map (kbd "p o") #'apprentice-project-toggle-file-and-tests-other-window)
+    (define-key map (kbd "p t") #'apprentice-project-run-tests-for-current-file)
+    (define-key map (kbd "p l") #'apprentice-project-find-lib)
+    (define-key map (kbd "p f") #'apprentice-project-find-test)
+
+    (define-key map (kbd "i i") #'apprentice-iex-run)
+    (define-key map (kbd "i p") #'apprentice-iex-project-run)
+    (define-key map (kbd "i l") #'apprentice-iex-send-current-line)
+    (define-key map (kbd "i c") #'apprentice-iex-send-current-line-and-go)
+    (define-key map (kbd "i r") #'apprentice-iex-send-region)
+    (define-key map (kbd "i m") #'apprentice-iex-send-region-and-go)
+    (define-key map (kbd "i b") #'apprentice-iex-compile-this-buffer)
+    (define-key map (kbd "i R") #'apprentice-iex-reload-module)
+
+    (define-key map (kbd "v l") #'apprentice-eval-current-line)
+    (define-key map (kbd "v k") #'apprentice-eval-print-current-line)
+    (define-key map (kbd "v j") #'apprentice-eval-quoted-current-line)
+    (define-key map (kbd "v h") #'apprentice-eval-print-quoted-current-line)
+    (define-key map (kbd "v o") #'apprentice-eval-region)
+    (define-key map (kbd "v i") #'apprentice-eval-print-region)
+    (define-key map (kbd "v u") #'apprentice-eval-quoted-region)
+    (define-key map (kbd "v y") #'apprentice-eval-print-quoted-region)
+    (define-key map (kbd "v q") #'apprentice-eval-buffer)
+    (define-key map (kbd "v w") #'apprentice-eval-print-buffer)
+    (define-key map (kbd "v e") #'apprentice-eval-quoted-buffer)
+    (define-key map (kbd "v r") #'apprentice-eval-print-quoted-buffer)
+    (define-key map (kbd "v !") #'apprentice-eval-close-popup)
+
+    ;; (define-key map (kbd "o l") #'apprentice-macroexpand-once-current-line)
+    ;; (define-key map (kbd "o L") #'apprentice-macroexpand-once-print-current-line)
+    ;; (define-key map (kbd "o k") #'apprentice-macroexpand-current-line)
+    ;; (define-key map (kbd "o K") #'apprentice-macroexpand-print-current-line)
+    ;; (define-key map (kbd "o i") #'apprentice-macroexpand-once-region)
+    ;; (define-key map (kbd "o I") #'apprentice-macroexpand-once-print-region)
+    ;; (define-key map (kbd "o r") #'apprentice-macroexpand-region)
+    ;; (define-key map (kbd "o R") #'apprentice-macroexpand-print-region)
+    ;; (define-key map (kbd "o !") #'apprentice-macroexpand-close-popup)
+
+    (define-key map (kbd "X i") #'apprentice-hex-info-at-point)
+    (define-key map (kbd "X r") #'apprentice-hex-releases-at-point)
+    (define-key map (kbd "X R") #'apprentice-hex-releases)
+    (define-key map (kbd "X s") #'apprentice-hex-search)
+    (define-key map (kbd "X I") #'apprentice-hex-info)
+    (define-key map (kbd "X d") #'apprentice-hex-all-dependencies)
+
+    (define-key map (kbd "C-c M-r") #'apprentice-test-toggle-test-report-display)
+
+    map))
+
+(defvar apprentice-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map apprentice-key-command-prefix apprentice-mode-keymap)
+    map)
+  "Keymap for `apprentice-mode'.")
 
 ;;;###autoload
 (define-minor-mode apprentice-mode
@@ -123,87 +203,11 @@ Key bindings:
   :lighter " apprentice"
   :group 'apprentice
   :global nil
-  :keymap `((,apprentice-key-command-prefix . apprentice-mode-keymap))
   (cond (apprentice-mode
          ;;(apprentice-server-start-if-not-running)
          (apprentice-test-initialize-modeline))
         (t
          (apprentice-test-reset-modeline))))
-
-(let ((map apprentice-mode-keymap))
-  (define-key map (kbd "x") #'apprentice-mix)
-  (define-key map (kbd "t") #'apprentice-mix-test)
-  (define-key map (kbd "r") #'apprentice-mix-rerun-last-test)
-
-  (define-key map (kbd "m c") #'apprentice-mix-compile)
-  (define-key map (kbd "m r") #'apprentice-mix-run)
-  (define-key map (kbd "m l") #'apprentice-mix-rerun-last-task)
-  (define-key map (kbd "m t f") #'apprentice-mix-test-file)
-  (define-key map (kbd "m t b") #'apprentice-mix-test-this-buffer)
-  (define-key map (kbd "m t .") #'apprentice-mix-test-at-point)
-  (define-key map (kbd "m t s") #'apprentice-mix-test-stale)
-  (define-key map (kbd "m t r") #'apprentice-mix-rerun-last-test)
-
-  (define-key map (kbd "c c") #'apprentice-compile)
-  (define-key map (kbd "c f") #'apprentice-compile-file)
-  (define-key map (kbd "c b") #'apprentice-compile-this-buffer)
-
-  (define-key map (kbd "e e") #'apprentice-execute)
-  (define-key map (kbd "e f") #'apprentice-execute-file)
-  (define-key map (kbd "e b") #'apprentice-execute-this-buffer)
-
-  ;; (define-key map (kbd "h h") #'apprentice-help)
-  ;; (define-key map (kbd "h i") #'apprentice-help-history)
-  ;; (define-key map (kbd "h e") #'apprentice-help-search-at-point)
-  (define-key map (kbd "h r") #'apprentice-refcard)
-
-  (define-key map (kbd "p s") #'apprentice-project-toggle-file-and-tests)
-  (define-key map (kbd "p o") #'apprentice-project-toggle-file-and-tests-other-window)
-  (define-key map (kbd "p t") #'apprentice-project-run-tests-for-current-file)
-  (define-key map (kbd "p l") #'apprentice-project-find-lib)
-  (define-key map (kbd "p f") #'apprentice-project-find-test)
-
-  (define-key map (kbd "i i") #'apprentice-iex-run)
-  (define-key map (kbd "i p") #'apprentice-iex-project-run)
-  (define-key map (kbd "i l") #'apprentice-iex-send-current-line)
-  (define-key map (kbd "i c") #'apprentice-iex-send-current-line-and-go)
-  (define-key map (kbd "i r") #'apprentice-iex-send-region)
-  (define-key map (kbd "i m") #'apprentice-iex-send-region-and-go)
-  (define-key map (kbd "i b") #'apprentice-iex-compile-this-buffer)
-  (define-key map (kbd "i R") #'apprentice-iex-reload-module)
-
-  (define-key map (kbd "v l") #'apprentice-eval-current-line)
-  (define-key map (kbd "v k") #'apprentice-eval-print-current-line)
-  (define-key map (kbd "v j") #'apprentice-eval-quoted-current-line)
-  (define-key map (kbd "v h") #'apprentice-eval-print-quoted-current-line)
-  (define-key map (kbd "v o") #'apprentice-eval-region)
-  (define-key map (kbd "v i") #'apprentice-eval-print-region)
-  (define-key map (kbd "v u") #'apprentice-eval-quoted-region)
-  (define-key map (kbd "v y") #'apprentice-eval-print-quoted-region)
-  (define-key map (kbd "v q") #'apprentice-eval-buffer)
-  (define-key map (kbd "v w") #'apprentice-eval-print-buffer)
-  (define-key map (kbd "v e") #'apprentice-eval-quoted-buffer)
-  (define-key map (kbd "v r") #'apprentice-eval-print-quoted-buffer)
-  (define-key map (kbd "v !") #'apprentice-eval-close-popup)
-
-  ;; (define-key map (kbd "o l") #'apprentice-macroexpand-once-current-line)
-  ;; (define-key map (kbd "o L") #'apprentice-macroexpand-once-print-current-line)
-  ;; (define-key map (kbd "o k") #'apprentice-macroexpand-current-line)
-  ;; (define-key map (kbd "o K") #'apprentice-macroexpand-print-current-line)
-  ;; (define-key map (kbd "o i") #'apprentice-macroexpand-once-region)
-  ;; (define-key map (kbd "o I") #'apprentice-macroexpand-once-print-region)
-  ;; (define-key map (kbd "o r") #'apprentice-macroexpand-region)
-  ;; (define-key map (kbd "o R") #'apprentice-macroexpand-print-region)
-  ;; (define-key map (kbd "o !") #'apprentice-macroexpand-close-popup)
-
-  (define-key map (kbd "X i") #'apprentice-hex-info-at-point)
-  (define-key map (kbd "X r") #'apprentice-hex-releases-at-point)
-  (define-key map (kbd "X R") #'apprentice-hex-releases)
-  (define-key map (kbd "X s") #'apprentice-hex-search)
-  (define-key map (kbd "X I") #'apprentice-hex-info)
-  (define-key map (kbd "X d") #'apprentice-hex-all-dependencies))
-
-(define-key apprentice-mode-map (kbd "C-c M-r") 'apprentice-test-toggle-test-report-display)
 
 (easy-menu-define apprentice-mode-menu apprentice-mode-map
   "Apprentice mode menu."
