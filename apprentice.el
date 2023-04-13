@@ -62,7 +62,7 @@
 
 (defcustom apprentice-key-command-prefix (kbd "C-c a")
   "The prefix for Apprentice related key commands."
-  :type 'string
+  :type 'key-sequence
   :group 'apprentice)
 
 
