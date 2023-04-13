@@ -29,6 +29,7 @@
 
 (require 'cl-lib)
 (require 'tabulated-list)
+(require 'apprentice)
 (require 'apprentice-phoenix)
 
 ;; Tell the byte compiler about autoloaded functions from packages
