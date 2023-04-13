@@ -119,6 +119,7 @@
     (define-key map (kbd "n R") #'apprentice-phoenix-routes)
     map)
   "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
+
 (fset 'apprentice-phoenix-command-map apprentice-phoenix-command-map)
 
 (defvar apprentice-phoenix-mode-map
