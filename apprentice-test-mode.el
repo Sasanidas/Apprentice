@@ -29,7 +29,7 @@
 
 (require 'apprentice-project)
 
-(defgroup apprentice-test-mode nil
+(defgroup apprentice-test nil
   "Minor mode for Elixir ExUnit files."
   :prefix "apprentice-test-mode-"
   :group 'apprentice)
