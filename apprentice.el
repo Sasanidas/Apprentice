@@ -80,6 +80,7 @@
 (require 'apprentice-macroexpand)
 
 (declare-function apprentice-refcard "apprentice-refcard")
+(declare-function apprentice-hooks-mode "apprentice-hooks")
 
 (defun apprentice-mode-hook ()
   "Hook which enables `apprentice-mode'."
@@ -205,7 +206,8 @@ Key bindings:
          ;;(apprentice-server-start-if-not-running)
          (apprentice-test-initialize-modeline))
         (t
-         (apprentice-test-reset-modeline))))
+         (apprentice-test-reset-modeline)))
+  (apprentice-hooks-mode apprentice-mode))
 
 (easy-menu-define apprentice-mode-menu apprentice-mode-map
   "Apprentice mode menu."
