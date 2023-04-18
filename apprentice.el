@@ -111,7 +111,7 @@ just return nil."
 
 (defvar apprentice-mode-keymap
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "x") #'apprentice-mix)
+    ;; (define-key map (kbd "x") #'apprentice-mix)
     (define-key map (kbd "t") #'apprentice-mix-test)
     (define-key map (kbd "r") #'apprentice-mix-rerun-last-test)
 
