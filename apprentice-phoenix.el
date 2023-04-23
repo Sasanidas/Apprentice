@@ -39,6 +39,11 @@
    (file-name-as-directory "lib")
    (apprentice-project-name) "_web"))
 
+(defun apprentice-phoenix-app-directory ()
+  (concat
+   (file-name-as-directory "lib")
+   (apprentice-project-name)))
+
 ;;;###autoload
 (defun apprentice-phoenix-project-p ()
   "Return non-nil if `default-directory' is inside a Phoenix project."
@@ -78,18 +83,16 @@
 
 (defun apprentice-phoenix-find-models ()
   (interactive)
-  (apprentice-phoenix-find-dir
-   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "models")))
+  (apprentice-phoenix-find-dir (apprentice-phoenix-app-directory)))
 
 (defun apprentice-phoenix-find-static ()
   (interactive)
-  (apprentice-phoenix-find-dir
-   (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "static")))
+  (apprentice-phoenix-find-dir "priv/static"))
 
 (defun apprentice-phoenix-routes (&optional prefix)
   (interactive)
   "Run the Mix task 'phoenix.routes' and list all available Phoenix routes."
-  (apprentice-mix-execute '("phoenix.routes") prefix))
+  (apprentice-mix-execute '("phx.routes") prefix))
 
 (defun apprentice-phoenix-router ()
   "Open the 'router.ex' file from 'PROJECTNAME_web' directory."
@@ -100,19 +103,19 @@
 	      (apprentice-project-root)
 	      (file-name-as-directory (apprentice-phoenix-web-directory)) "router.ex")))
 
-  (defvar apprentice-phoenix-command-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
-      (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
-      (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
-      (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
-      (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
-      (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
-      (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
-      (define-key map (kbd "n r") #'apprentice-phoenix-router)
-      (define-key map (kbd "n R") #'apprentice-phoenix-routes)
-      map)
-    "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
+(defvar apprentice-phoenix-command-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n w") #'apprentice-phoenix-find-web)
+    (define-key map (kbd "n v") #'apprentice-phoenix-find-views)
+    (define-key map (kbd "n c") #'apprentice-phoenix-find-controllers)
+    (define-key map (kbd "n l") #'apprentice-phoenix-find-channels)
+    (define-key map (kbd "n t") #'apprentice-phoenix-find-templates)
+    (define-key map (kbd "n m") #'apprentice-phoenix-find-models)
+    (define-key map (kbd "n s") #'apprentice-phoenix-find-static)
+    (define-key map (kbd "n r") #'apprentice-phoenix-router)
+    (define-key map (kbd "n R") #'apprentice-phoenix-routes)
+    map)
+  "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
 (fset 'apprentice-phoenix-command-map apprentice-phoenix-command-map)
 
 (defvar apprentice-phoenix-mode-map
@@ -125,15 +128,15 @@
   "Menu for Apprentice-Phoenix mode."
   '("Phoenix"
     ("Directory lookup"
-     ["Lookup 'web' " apprentice-phoenix-find-web]
-     ["Lookup 'web/views' " apprentice-phoenix-find-views]
-     ["Lookup 'web/controllers' " apprentice-phoenix-find-controllers]
-     ["Lookup 'web/channels' " apprentice-phoenix-find-channels]
-     ["Lookup 'web/templates' " apprentice-phoenix-find-templates]
-     ["Lookup 'web/models' " apprentice-phoenix-find-models]
-     ["Lookup 'web/static'" apprentice-phoenix-find-static])
+     ["Lookup 'app_web' " apprentice-phoenix-find-web]
+     ["Lookup 'app_web/views' " apprentice-phoenix-find-views]
+     ["Lookup 'app_web/controllers' " apprentice-phoenix-find-controllers]
+     ["Lookup 'app_web/channels' " apprentice-phoenix-find-channels]
+     ["Lookup 'app_web/templates' " apprentice-phoenix-find-templates]
+     ["Lookup 'app' " apprentice-phoenix-find-models]
+     ["Lookup 'priv/static'" apprentice-phoenix-find-static])
     ("Mix tasks"
-     ["Run 'phoenix.routes'" apprentice-phoenix-routes])
+     ["Run 'phx.routes'" apprentice-phoenix-routes])
     ["Open the 'router.ex' file" apprentice-phoenix-router]))
 
 ;;;###autoload
