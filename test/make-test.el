@@ -1,6 +1,5 @@
 (let* ((project-files-list '("apprentice-test-helper.el"
 			     "apprentice-eval-test.el"
-			     "apprentice-file-test.el"
 			     "apprentice-help-test.el"
 			     "apprentice-iex-test.el"
 			     "apprentice-interact-test.el"

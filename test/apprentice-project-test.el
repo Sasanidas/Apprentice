@@ -24,6 +24,18 @@
 ;;; Code:
 (require 'apprentice-test-helper)
 
+
+(ert-deftest apprentice-project/list-files-from-directory ()
+  (with-sandbox
+   (f-touch "mix.exs")
+   (f-mkdir "lib")
+   (f-mkdir "lib" "path")
+   (f-touch "lib/file.ex")
+   (f-touch "lib/another.ex")
+   (f-touch "lib/path/foo.ex")
+   (should (equal (apprentice-project-read-dir (apprentice-project-root) "lib")
+                  '("lib/another.ex" "lib/file.ex" "lib/path/foo.ex")))))
+
 (ert-deftest test-project-root/no-argument ()
   "Should use `default-directory' when no argument."
   (setq apprentice-project-root-path-cache nil)

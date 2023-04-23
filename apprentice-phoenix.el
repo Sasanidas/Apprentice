@@ -55,7 +55,7 @@
 (defun apprentice-phoenix-find-dir (directory)
   (unless (apprentice-phoenix-project-p)
     (error "Could not find a Phoenix Mix project root"))
-  (apprentice-file-find-files (apprentice-project-root) directory))
+  (apprentice-project-find-files apprentice-project-root directory))
 
 (defun apprentice-phoenix-find-web ()
   (interactive)
@@ -87,7 +87,10 @@
 
 (defun apprentice-phoenix-find-static ()
   (interactive)
-  (apprentice-phoenix-find-dir "priv/static"))
+  (apprentice-phoenix-find-dir (concat
+	      (file-name-as-directory
+	       (concat (file-name-as-directory (apprentice-project-root)) "priv"))
+	      "static")))
 
 (defun apprentice-phoenix-routes (&optional prefix)
   (interactive)

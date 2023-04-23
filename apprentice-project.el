@@ -28,7 +28,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'apprentice-file)
 
 (defgroup apprentice-project nil
   "API to identify Elixir mix projects."
@@ -228,10 +227,32 @@ The newly created buffer is filled with a module definition based on the file na
       (car (last (split-string (apprentice-project-root) "/") 2))
     ""))
 
+(defun apprentice-project-find-files (root directory)
+  "Open DIRECTORY inside ROOT and prompt for a file."
+  (let* ((files (apprentice-project-read-dir root directory))
+         (file (completing-read (format "[%s] %s: " (apprentice-project-name) directory) files)))
+    (find-file (expand-file-name file root))))
+
+(defun apprentice-project-read-dir (root directory)
+  "Return all files in DIRECTORY and use ROOT as `default-directory'."
+  (let ((default-directory root))
+    (mapcar (lambda (file) (file-relative-name file root))
+	    (apprentice-project--files-from directory))))
+
+(defun apprentice-project--files-from (directory)
+  "Internal function that return all files from DIRECTORY."
+  (when directory
+    (cl-loop for d in (directory-files directory t)
+	     if (file-directory-p d)
+	     nconc (unless (or (equal (file-relative-name d directory) "..")
+			       (equal (file-relative-name d directory) "."))
+		     (apprentice-project--files-from d))
+	     else nconc (list d))))
+
 (defun apprentice-project-find-dir (directory)
   (unless (apprentice-project-p)
-    (error "Could not find an Elixir Mix project root."))
-  (apprentice-file-find-files (apprentice-project-root) directory))
+    (error "Could not find an Elixir Mix project root"))
+  (apprentice-project-find-files (apprentice-project-root) directory))
 
 (defun apprentice-project-find-lib ()
   (interactive)
