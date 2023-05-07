@@ -29,7 +29,7 @@
 
 (require 'apprentice-project)
 
-(defgroup apprentice-test-mode nil
+(defgroup apprentice-test nil
   "Minor mode for Elixir ExUnit files."
   :prefix "apprentice-test-mode-"
   :group 'apprentice)
@@ -258,7 +258,7 @@ macro) while the values are the position at which the test matched."
 
 (defun apprentice-test-execute (command-list)
   (message "Testing...")
-  (let* ((command (mapconcat 'concat (flatten-list command-list) " ")))
+  (let* ((command (mapconcat #'concat (flatten-list command-list) " ")))
     (apprentice-test-save-buffers)
     (apprentice-report-run command
 			   apprentice-test-report-process-name
@@ -308,9 +308,9 @@ jump to the first error in the test report.
 Do nothing if there are no error in this test report."
   (interactive)
   (apprentice-utils-jump-to-previous-matching-line apprentice-test--failing-files-regex
-                                                   #'(lambda ()
-                                                       (forward-line 1)
-                                                       (back-to-indentation))))
+                                                   (lambda ()
+                                                     (forward-line 1)
+                                                     (back-to-indentation))))
 
 (defun apprentice-test-next-stacktrace-file ()
   "Jump to the next stacktrace file in the test report.

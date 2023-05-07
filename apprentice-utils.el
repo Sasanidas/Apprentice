@@ -37,7 +37,7 @@
 			    (split-string command-list)
 			  command-list)))
          (command (cl-remove "" command-list :test #'string-equal)))
-    (mapconcat 'concat command " ")))
+    (mapconcat #'concat command " ")))
 
 (defun apprentice-utils-count-char-occurence (regexp str)
   "Count occurrence of char with REGEXP inside STR."
@@ -82,7 +82,7 @@
 
 This function is useful for converting file names like my_module to Elixir
 module names (MyModule)."
-  (mapconcat 'capitalize (split-string str "_") ""))
+  (mapconcat #'capitalize (split-string str "_") ""))
 
 (defun apprentice-utils-add-ext-to-path-if-not-present (path ext)
   "Add EXT to PATH if PATH doesn't already ends with EXT."

@@ -32,6 +32,8 @@
 (require 'apprentice-project)
 (require 'apprentice-interact)
 
+(declare-function string-split "subr")
+
 (defgroup apprentice-hex nil
   "Interface to the Hex package manager API."
   :prefix "apprentice-test-mode-"
@@ -61,7 +63,7 @@
 	    (delete-region (point-min) (point))
             (buffer-string))))
     (when (string-match-p "\"status\":404" string)
-      (error (format "There is no hex package [%s] available" pkg-name)))
+      (error "There is no hex package [%s] available" pkg-name))
     (json-read-from-string string)))
 
 (defun apprentice-hex--fetch-search-packages (pkg-name)
@@ -110,7 +112,7 @@
 				 'url (replace-regexp-in-string "\\(api/\\|releases/\\)" "" url))
 		  (insert (format "     (%s %s)"
 				  (propertize "released on" 'face font-lock-string-face)
-				  (format-time-string "%Y-%m-%d" date)))
+				  (format-time-string "%F" date)))
 		  (insert "   (")
 		  (insert-button "docs"
 				 'face font-lock-constant-face
@@ -217,7 +219,7 @@
 
 		     (insert (format "     (%s %s)"
 				     (propertize "released on" 'face font-lock-string-face)
-				     (format-time-string "%Y-%m-%d" date)))
+				     (format-time-string "%F" date)))
 		     (insert "   (")
 		     (insert-button "docs"
 				    'face font-lock-constant-face
@@ -277,16 +279,16 @@
 		    (buffer-string))))
     (apprentice-interact-create-popup apprentice-hex-buffer-name
 				      content
-				      #'(lambda ()
-					  (elixir-mode)
-					  (apprentice-hex-mode)))))
+				      (lambda ()
+					(elixir-mode)
+					(apprentice-hex-mode)))))
 
 (defun apprentice-hex-dependency-info ()
   "Display Hex information from dependency."
   (interactive)
-  (let* ((dependencies (mapcar #'(lambda (x)
-				   (let ((dep (car x)))
-				     (substring (format "%s" dep) 1)))
+  (let* ((dependencies (mapcar (lambda (x)
+				 (let ((dep (car x)))
+				   (substring (format "%s" dep) 1)))
 			       (apprentice-hex--get-current-dependencies)))
 	 (dep (completing-read "Dependency: " dependencies)))
     (apprentice-hex-info dep)))
@@ -316,7 +318,7 @@
 
 \\{apprentice-hex-mode-map}"
   :keymap apprentice-hex-mode-map
-  :lighter "Apprentice-Hex"
+  :lighter " Apprentice-Hex"
   (setq buffer-read-only t))
 
 (provide 'apprentice-hex)

@@ -184,9 +184,9 @@ first module defined in BUFFER."
   "Insert ExUnit boilerplate for MODULE in BUFFER.
 Point is left in a convenient location."
   (with-current-buffer buffer
-    (insert (concat "defmodule " module " do\n"
-                    "  use ExUnit.Case\n\n\n"
-                    "end\n"))
+    (insert "defmodule " module " do\n"
+            "  use ExUnit.Case\n\n\n"
+            "end\n")
     (goto-char (point-min))
     (beginning-of-line 4)
     (indent-according-to-mode)))
@@ -212,11 +212,11 @@ The newly created buffer is filled with a module definition based on the file na
             (message "%s already exists" relative-path)
           (make-directory (file-name-directory abs-path) t)
           (find-file abs-path)
-          (insert (concat "defmodule "
-                          (apprentice-utils-path-to-module-name relative-path)
-                          " do\n"
-                          "  \n"
-                          "end\n"))
+          (insert "defmodule "
+                  (apprentice-utils-path-to-module-name relative-path)
+                  " do\n"
+                  "  \n"
+                  "end\n")
           (goto-char (point-min))
           (beginning-of-line 2)
           (back-to-indentation))))))

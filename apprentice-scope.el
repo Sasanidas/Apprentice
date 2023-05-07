@@ -177,7 +177,7 @@ Example:
     (when (string-match-p "^[a-z_\?!]+" function)
       (delete function parts))
     (unless (string-match-p "^[a-z_\?!]+" (car parts))
-      (apprentice-utils-remove-dot-at-the-end (mapconcat 'concat parts ".")))))
+      (apprentice-utils-remove-dot-at-the-end (mapconcat #'concat parts ".")))))
 
 (defun apprentice-scope-extract-function (expr)
   "Extract function from EXPR."

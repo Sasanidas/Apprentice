@@ -68,10 +68,16 @@
                           nil
                           t)))
 
-(eval-after-load 'elixir-mode
-  '(progn
-     (add-hook 'after-save-hook 'apprentice-hooks-test-on-save nil nil)
-     (add-hook 'after-save-hook 'apprentice-hooks-compile-on-save nil nil)))
+
+(define-minor-mode apprentice-hooks-mode
+  "Run hooks on saving the buffer."
+  (if (bound-and-true-p apprentice-hooks-mode)
+      (progn
+        (add-hook 'after-save-hook #'apprentice-hooks-test-on-save nil t)
+        (add-hook 'after-save-hook #'apprentice-hooks-compile-on-save nil t))
+    (progn
+      (remove-hook 'after-save-hook #'apprentice-hooks-test-on-save t)
+      (remove-hook 'after-save-hook #'apprentice-hooks-compile-on-save t))))
 
 (provide 'apprentice-hooks)
 
