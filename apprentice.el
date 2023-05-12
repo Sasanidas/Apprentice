@@ -76,6 +76,7 @@
 (require 'apprentice-hooks)
 (require 'apprentice-execute)
 (require 'apprentice-iex)
+(require 'apprentice-phoenix)
 (require 'apprentice-compile)
 (require 'apprentice-macroexpand)
 
