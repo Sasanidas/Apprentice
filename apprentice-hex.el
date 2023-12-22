@@ -31,6 +31,7 @@
 (require 'cl-lib)
 (require 'apprentice-project)
 (require 'apprentice-interact)
+(require 'elixir-mode)
 
 (declare-function string-split "subr")
 
