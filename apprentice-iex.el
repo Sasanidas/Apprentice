@@ -277,10 +277,6 @@ It also jump to the buffer."
       (other-window 1)))
 
 ;;;###autoload
-(defalias 'run-elixir #'apprentice-iex-run)
-(defalias 'inferior-elixir #'apprentice-iex-run)
-
-;;;###autoload
 (defun apprentice-iex-run (&optional arg)
   "Start an IEx process with ARG.
 Show the IEx buffer if an IEx process is already run."

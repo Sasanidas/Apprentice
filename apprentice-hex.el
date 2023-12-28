@@ -258,7 +258,7 @@
          (deps (sort (copy-sequence deps) 'equal)))
     (unless (string-match-p "\s*defp? deps do" mix-content)
       (error "No dependency information available in 'mix.exs'"))
-    (mapcar (lambda (x) (string-split x "," t " ")) deps)))
+    (mapcar (lambda (x) (split-string x "," t " ")) deps)))
 
 (defun apprentice-hex-all-dependencies ()
   "Display Hex package dependencies for the current Mix project."
