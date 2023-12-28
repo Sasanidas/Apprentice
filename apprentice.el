@@ -60,7 +60,7 @@
   :prefix "apprentice-key-"
   :group 'apprentice)
 
-(defcustom apprentice-key-command-prefix (kbd "C-c a")
+(defcustom apprentice-key-command-prefix (kbd "C-u a")
   "The prefix for Apprentice related key commands."
   :type 'key-sequence
   :group 'apprentice)
