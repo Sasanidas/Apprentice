@@ -73,6 +73,7 @@ This is meant to be use on a hook."
                           t)))
 
 
+;;;###autoload
 (define-minor-mode apprentice-hooks-mode
   "Run hooks on saving the buffer."
   :global t
