@@ -34,7 +34,7 @@
 (require 'apprentice-test-mode)
 
 (defgroup apprentice-hooks nil
-  "Hooks"
+  "Apprentice hooks."
   :prefix "apprentice-hooks-"
   :group 'apprentice)
 
@@ -49,6 +49,8 @@
   :group 'apprentice-hooks)
 
 (defun apprentice-hooks-test-on-save ()
+  "Test on save function.
+This is meant to be use on a hook."
   (when (and apprentice-hooks-test-on-save
              (apprentice-project-p))
     (apprentice-report-run "mix test"
@@ -59,6 +61,8 @@
                           t)))
 
 (defun apprentice-hooks-compile-on-save ()
+  "Compile on save function.
+This is meant to be use on a hook."
   (when (and apprentice-hooks-compile-on-save
              (apprentice-project-p))
     (apprentice-report-run "mix compile"
@@ -71,6 +75,9 @@
 
 (define-minor-mode apprentice-hooks-mode
   "Run hooks on saving the buffer."
+  :global t
+  :lighter " Apprentice Hooks"
+  :group 'apprentice
   (if (bound-and-true-p apprentice-hooks-mode)
       (progn
         (add-hook 'after-save-hook #'apprentice-hooks-test-on-save nil t)

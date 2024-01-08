@@ -83,7 +83,7 @@ It checks the PROCESS STATUS."
 
 (defun apprentice-report--handle-exit (status buffer)
   "Call the defined exit function specified in `apprentice-report-on-exit-function'.
-Argument for the exit function is the STATUS and BUFFER of the finished process."
+Argument for the function is the STATUS and BUFFER of the finished process."
   (apprentice-report--store-process-status status)
   (when apprentice-report-on-exit-function
     (funcall apprentice-report-on-exit-function status buffer)))

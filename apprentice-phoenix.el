@@ -28,6 +28,7 @@
 ;;; Code:
 
 (require 'apprentice-project)
+(require 'apprentice-mix)
 
 (defgroup apprentice-phoenix nil
   "Minor mode for the Phoenix web framework."
@@ -55,7 +56,7 @@
 (defun apprentice-phoenix-find-dir (directory)
   (unless (apprentice-phoenix-project-p)
     (error "Could not find a Phoenix Mix project root"))
-  (apprentice-project-find-files apprentice-project-root directory))
+  (apprentice-project-find-files (apprentice-project-root) directory))
 
 (defun apprentice-phoenix-find-web ()
   (interactive)
@@ -68,7 +69,7 @@
 
 (defun apprentice-phoenix-find-controllers ()
   (interactive)
-  (apprentice-phoenix-find-dir 
+  (apprentice-phoenix-find-dir
    (concat (file-name-as-directory (apprentice-phoenix-web-directory)) "controllers")))
 
 (defun apprentice-phoenix-find-channels ()
@@ -93,12 +94,13 @@
 	      "static")))
 
 (defun apprentice-phoenix-routes (&optional prefix)
+  "Run the Mix task \"phoenix.routes\" and list all available Phoenix routes.
+It can optionally be called with PREFIX."
   (interactive)
-  "Run the Mix task 'phoenix.routes' and list all available Phoenix routes."
   (apprentice-mix-execute '("phx.routes") prefix))
 
 (defun apprentice-phoenix-router ()
-  "Open the 'router.ex' file from 'PROJECTNAME_web' directory."
+  "Open the \"router.ex\" file from \"PROJECTNAME_web\" directory."
   (interactive)
   (unless (apprentice-phoenix-project-p)
     (error "Could not find an Phoenix Mix project root"))
@@ -119,6 +121,8 @@
     (define-key map (kbd "n R") #'apprentice-phoenix-routes)
     map)
   "Keymap for Apprentice Phoenix commands after `apprentice-key-command-prefix'.")
+
+(defvar apprentice-key-command-prefix )
 
 (defvar apprentice-phoenix-mode-map
   (let ((map (make-sparse-keymap)))

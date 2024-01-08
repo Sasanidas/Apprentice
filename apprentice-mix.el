@@ -31,6 +31,7 @@
 (require 'apprentice-utils)
 (require 'apprentice-project)
 (require 'apprentice-test-mode)
+(require 'comint)
 
 (defgroup apprentice-mix nil
   "Emacs integration for Elixir's mix."
@@ -88,10 +89,11 @@ If nil, the mix env is not set explicitly."
 ;; Private functions
 
 (defun apprentice-mix--completing-read (prompt cmdlist)
+  "Call completion read with PROMPT and CMDLIST."
   (completing-read prompt cmdlist nil t nil nil (car cmdlist)))
 
 (defun apprentice-mix--execute-test (&optional what)
-  "Execute 'mix test' on the given `WHAT'.
+  "Execute \"mix test\" on the given `WHAT'.
 
 `WHAT' could be a filename, a filename:line string or the empty string (meaning
 run all tests)."
@@ -99,9 +101,9 @@ run all tests)."
       (setq apprentice-last-run-test what)
     (setq apprentice-last-run-test ""))
   (apprentice-test-execute (list apprentice-mix-command
-                                apprentice-mix-test-task
-                                what
-                                apprentice-mix-test-default-options)))
+				 apprentice-mix-test-task
+				 what
+				 apprentice-mix-test-default-options)))
 
 (defun apprentice-mix--test-file (filename)
   "Run a specific FILENAME as argument for the mix command test."
@@ -172,7 +174,8 @@ Prompt for the mix env if PREFIX arg is set."
   (apprentice-mix-execute (list "compile" command) prefix))
 
 (defun apprentice-mix-run (command &optional prefix)
-  "Runs the given file or expression in the context of the application."
+  "Run COMMAND on the given file or expression in the context of the application.
+Optionally, it accept PREFIX."
   (interactive "Mmix run: \nP")
   (apprentice-mix-execute (list "run" command) prefix))
 
@@ -201,12 +204,14 @@ When no mix task had been run before calling this function, do nothing."
     (message "No mix task have been run yet")))
 
 (defun apprentice-mix--find-closest-mix-file-dir (path)
+  "Find the closest mix file from PATH."
   (let ((root (locate-dominating-file path "mix.exs")))
     (when root
       (file-truename root))))
 
 
 (defun apprentice-mix--umbrella-apps ()
+  "Check if we are in an \"umbrella app\" project."
   (let ((closest-path (locate-dominating-file default-directory "apps")))
     (when closest-path
       (seq-filter

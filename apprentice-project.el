@@ -198,8 +198,8 @@ Point is left in a convenient location."
 
 (defun apprentice-project-create-file ()
   "Create a file under lib/ in the current project.
-
-The newly created buffer is filled with a module definition based on the file name."
+The newly created buffer is filled with a module definition based
+on the file name."
   (interactive)
   (let ((root (apprentice-project-root)))
     (if (not root)

@@ -131,11 +131,14 @@ It uses `vterm-mode' for REPL interaction.
   (advice-add 'vterm-send-return :before #'apprentice-iex-vterm-insert-input))
 
 (defun apprentice-iex-command (arg)
+  "Launch an iex command with ARG as arguments."
   (split-string-and-unquote
    (if (null arg) apprentice-iex-program-name
      (read-string "Command to run Elixir IEx: " (concat apprentice-iex-program-name arg)))))
 
 (cl-defmethod apprentice-iex--start-process (command (type (eql :comint-mode)))
+  "Internal function that launch an iex process with COMMAND.
+In this case, it uses the TYPE `comint-mode'."
   (setq apprentice-iex-buffer
         (apply #'make-comint "Apprentice-IEx" (car command) nil (cdr command)))
   (with-current-buffer apprentice-iex-buffer
@@ -143,6 +146,8 @@ It uses `vterm-mode' for REPL interaction.
     (run-hooks 'apprentice-iex-comint-mode-hook)))
 
 (cl-defmethod apprentice-iex--start-process (command (type (eql :vterm-mode)))
+  "Internal function that launch an iex process with COMMAND.
+In this case, it uses the TYPE `vterm-mode'."
   (setq apprentice-iex-buffer
 	(let ((buffer (generate-new-buffer "*Apprentice-IEx*")))
 	  (with-current-buffer buffer
@@ -163,6 +168,8 @@ setting up the IEx buffer."
   (apprentice-iex--start-process command apprentice-iex-type))
 
 (defun apprentice-iex-process (&optional arg)
+  "Get the iex process or create a new one.
+When calling with ARG it creates the new one with those arguments."
   (or (if (buffer-live-p apprentice-iex-buffer)
           (get-buffer-process apprentice-iex-buffer))
       (progn
@@ -171,6 +178,7 @@ setting up the IEx buffer."
         (apprentice-iex-process arg))))
 
 (defun apprentice-iex--remove-newlines (string)
+  "Remove newlines from STRING."
   (replace-regexp-in-string "\n" " " string))
 
 (defun apprentice-iex-send-last-sexp ()
@@ -229,6 +237,8 @@ It also jump to the buffer."
 
 
 (cl-defmethod apprentice-iex--command (proc (lines list) (type (eql :comint-mode)))
+  "Process the PROC LINES.
+In this case, it uses the TYPE `comint-mode'.`"
   (with-current-buffer (process-buffer proc)
     (cl-loop for line in lines
 	     do (progn
@@ -238,28 +248,34 @@ It also jump to the buffer."
 		  (comint-send-string proc (concat line "\n"))))))
 
 (cl-defmethod apprentice-iex--command (proc (lines list) (type (eql :vterm-mode)))
+  "Process the PROC LINES.
+In this case, it uses the TYPE `vterm-mode'.`"
   (with-current-buffer (process-buffer proc)
     (vterm-send-string
      (mapconcat #'identity lines " "))
     (vterm-send-return)))
 
 (defun apprentice-iex--send-command (proc str)
+  "Send STR to PROC."
   (let ((lines (split-string str "\n" nil)))
     (apprentice-iex--command proc lines apprentice-iex-type)))
 
 (defun apprentice-iex-spot-prompt (_string)
+  "Move the point to the process mark."
   (let ((proc (get-buffer-process (current-buffer))))
     (when proc
       (save-excursion
         (goto-char (process-mark proc))))))
 
 (cl-defmethod apprentice-iex--clear-buffer ((type (eql :comint-mode)))
+  "Clear the buffer of a iex REPL of TYPE `comint-mode'."
   (with-current-buffer (process-buffer
 			(apprentice-iex-process))
     (let ((comint-buffer-maximum-size 0))
       (comint-truncate-buffer))))
 
 (cl-defmethod apprentice-iex--clear-buffer ((type (eql :vterm-mode)))
+  "Clear the buffer of a iex REPL of TYPE `vterm-mode'."
   (with-current-buffer (process-buffer
 			(apprentice-iex-process))
     (vterm-clear)))
@@ -288,7 +304,7 @@ Show the IEx buffer if an IEx process is already run."
 
 ;;;###autoload
 (defun apprentice-iex-project-run ()
-  "Start an IEx process with mix 'iex -S mix'.
+  "Start an IEx process with mix \"iex -S mix\".
 in the context of an Elixir project.Show the IEx buffer if an
 IEx process is already run."
   (interactive)
